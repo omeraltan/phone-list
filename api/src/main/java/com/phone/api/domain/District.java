@@ -1,12 +1,13 @@
 package com.phone.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.phone.api.annotation.CustomSize;
 import com.phone.api.annotation.JsonSerializable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import java.io.Serializable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.util.List;
 
 /**
  * A District.
@@ -26,7 +27,7 @@ public class District {
 
     @NotNull
     @NotBlank
-    @Size(min = 0, max = 100)
+    @Size(min = 0, max = 10, message = "Test 123 Test 123")
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -39,6 +40,9 @@ public class District {
     @NotNull
     @Column(name = "code", nullable = false)
     private Integer code;
+
+    @OneToOne(mappedBy = "district")
+    private Customer customer;
 
     public Long getId() {
         return this.id;
@@ -85,6 +89,14 @@ public class District {
 
     public void setCode(Integer code) {
         this.code = code;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override

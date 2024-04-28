@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface JsonSerializable {
+@Retention(RetentionPolicy.RUNTIME) // Çalışma zamanında korunması gerektiğini belirtmektedir.
+@Target(ElementType.TYPE) // Hangi tipler üzerinde kullanılabileceğini belirtmektedir.
+public @interface JsonSerializable{
 
 }

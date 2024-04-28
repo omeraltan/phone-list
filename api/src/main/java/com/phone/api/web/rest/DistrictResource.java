@@ -30,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
@@ -166,7 +167,12 @@ public class DistrictResource {
             throw new BadRequestException("A new district cannot already have an ID " +  ENTITY_NAME + " id exists");
         }
         districtDTO = districtService.save(districtDTO);
-        return new ResponseEntity<>(districtDTO, HttpStatus.CREATED);
+        //return new ResponseEntity<>(districtDTO, HttpStatus.CREATED);
+        //return ResponseEntity.created(new URI("/api/district/" + districtDTO.getId())).body(districtDTO);
+
+        return ResponseEntity.created(new URI("/api/districts/" + districtDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, districtDTO.getId().toString()))
+            .body(districtDTO);
     }
 
     /**
