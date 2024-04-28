@@ -1,5 +1,7 @@
 package com.phone.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.phone.api.annotation.JsonSerializable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -13,7 +15,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "district")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class District implements Serializable {
+@JsonSerializable
+public class District {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -22,8 +25,16 @@ public class District implements Serializable {
     private Long id;
 
     @NotNull
+    @NotBlank
+    @Size(min = 0, max = 100)
     @Column(name = "name", nullable = false)
     private String name;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 0, max = 300)
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @NotNull
     @Column(name = "code", nullable = false)
@@ -55,6 +66,14 @@ public class District implements Serializable {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Integer getCode() {
         return this.code;
     }
@@ -67,8 +86,6 @@ public class District implements Serializable {
     public void setCode(Integer code) {
         this.code = code;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -87,13 +104,13 @@ public class District implements Serializable {
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "District{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", code=" + getCode() +
-            "}";
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", code=" + code +
+            '}';
     }
 }

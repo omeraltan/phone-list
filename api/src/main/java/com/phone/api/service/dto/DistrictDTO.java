@@ -1,5 +1,6 @@
 package com.phone.api.service.dto;
 
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -10,10 +11,18 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class DistrictDTO implements Serializable {
 
+    @Id
     private Long id;
 
     @NotNull
+    @NotBlank
+    @Size(min = 0, max = 100)
     private String name;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 0, max = 300)
+    private String description;
 
     @NotNull
     private Integer code;
@@ -32,6 +41,14 @@ public class DistrictDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getCode() {
@@ -63,14 +80,13 @@ public class DistrictDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "DistrictDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", code=" + getCode() +
-            "}";
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", code=" + code +
+            '}';
     }
-
 }

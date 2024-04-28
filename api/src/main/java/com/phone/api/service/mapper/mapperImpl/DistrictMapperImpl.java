@@ -28,6 +28,7 @@ public class DistrictMapperImpl implements DistrictMapper {
 
         district.setId( dto.getId() );
         district.setName( dto.getName() );
+        district.setDescription( dto.getDescription() );
         district.setCode( dto.getCode() );
 
         return district;
@@ -43,6 +44,7 @@ public class DistrictMapperImpl implements DistrictMapper {
 
         districtDTO.setId( entity.getId() );
         districtDTO.setName( entity.getName() );
+        districtDTO.setDescription( entity.getDescription() );
         districtDTO.setCode( entity.getCode() );
 
         return districtDTO;
@@ -81,12 +83,14 @@ public class DistrictMapperImpl implements DistrictMapper {
         if ( dto == null ) {
             return;
         }
-
         if ( dto.getId() != null ) {
             entity.setId( dto.getId() );
         }
         if ( dto.getName() != null ) {
             entity.setName( dto.getName() );
+        }
+        if ( dto.getDescription() != null ) {
+            entity.setDescription( dto.getDescription() );
         }
         if ( dto.getCode() != null ) {
             entity.setCode( dto.getCode() );
