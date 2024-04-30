@@ -1,13 +1,11 @@
 package com.phone.api.domain;
 
-import com.phone.api.annotation.CustomSize;
-import com.phone.api.annotation.JsonSerializable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * A District.
@@ -16,8 +14,7 @@ import java.util.List;
 @Table(name = "district")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-@JsonSerializable
-public class District {
+public class District implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -25,15 +22,9 @@ public class District {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 0, max = 10, message = "Test 123 Test 123")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 0, max = 300)
     @Column(name = "description", nullable = false)
     private String description;
 

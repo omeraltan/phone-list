@@ -1,4 +1,4 @@
-package com.phone.api.web.rest.errors;
+package com.phone.api.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.phone.api.web.rest.errors;
+package com.phone.api.exception;
 
 import java.util.Date;
 
@@ -30,4 +30,5 @@ public class ErrorMessage {
     public String getDescription() {
         return description;
     }
+
 }

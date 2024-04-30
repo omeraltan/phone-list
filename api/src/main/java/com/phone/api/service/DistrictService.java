@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,6 +30,39 @@ public class DistrictService {
     public DistrictService(DistrictRepository districtRepository, DistrictMapper districtMapper) {
         this.districtRepository = districtRepository;
         this.districtMapper = districtMapper;
+    }
+
+    /**
+     * Get one district by id.
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<DistrictDTO> findOne(Long id) {
+        log.debug("Request to get District : {}", id);
+        return districtRepository.findById(id).map(districtMapper::toDto);
+    }
+
+    @Transactional
+    public Optional<List<DistrictDTO>> findDistrictsByCodeIsLessThanZero(int code) {
+        log.debug("Request to get District By Code Less Then Zero : {}", code);
+        List<District> district = districtRepository.findDistrictsByCodeIsLessThan(code);
+        List<DistrictDTO> districtDTO = districtMapper.toDto(district);
+        return districtDTO == null ? Optional.empty() : Optional.of(districtDTO);
+        //return districtRepository.findDistrictsByCodeIsLessThan(code).map(districtMapper::toDto);
+    }
+
+    /**
+     * Get all the districts.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<DistrictDTO> findAll(Pageable pageable) {
+        log.debug("Request to get all Districts");
+        return districtRepository.findAll(pageable).map(districtMapper::toDto);
     }
 
     /**
@@ -75,30 +109,6 @@ public class DistrictService {
             })
             .map(districtRepository::save)
             .map(districtMapper::toDto);
-    }
-
-    /**
-     * Get all the districts.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Page<DistrictDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Districts");
-        return districtRepository.findAll(pageable).map(districtMapper::toDto);
-    }
-
-    /**
-     * Get one district by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Optional<DistrictDTO> findOne(Long id) {
-        log.debug("Request to get District : {}", id);
-        return districtRepository.findById(id).map(districtMapper::toDto);
     }
 
     /**
