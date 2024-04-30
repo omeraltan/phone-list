@@ -1,11 +1,9 @@
 package com.phone.api.domain;
 
-import com.phone.api.annotation.JsonSerializable;
 import com.phone.api.annotation.UniqueEmail;
 import jakarta.persistence.*;
 
 @Entity
-@JsonSerializable
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -5,25 +5,19 @@ import com.phone.api.service.DistrictService;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.utilty.HeaderUtil;
 import com.phone.api.utilty.PaginationUtil;
-import com.phone.api.utilty.ResponseUtil;
-import com.phone.api.web.rest.errors.BadRequestAlertException;
-import com.phone.api.web.rest.errors.BadRequestException;
-import com.phone.api.web.rest.errors.ResourceNotFoundException;
+import com.phone.api.exception.BadRequestException;
+import com.phone.api.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +26,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * swagger address : http://localhost:8080/swagger-ui/index.html
@@ -47,10 +43,11 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping("/api/district")
+@CrossOrigin(maxAge = 3600)
 public class DistrictResource {
 
     private final Logger log = LoggerFactory.getLogger(DistrictResource.class);
-    private static final String ENTITY_NAME = "district";
+    private static final String ENTITY_NAME = "DISTRICT";
 
     @Value("phoneListApp")
     private String applicationName;
@@ -111,6 +108,31 @@ public class DistrictResource {
     }
 
     /**
+     * {@code GET  /districts} : get all the districts with code information.
+     *
+     * @param code the code information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of districts in body.
+     */
+    @GetMapping("/code/{code}")
+    @Operation(
+        description = "Get Districts Service For Dropdown",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the District/Districts", content = @Content(schema = @Schema(implementation = DistrictDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get All Districts For District (City) Dropdown"
+    )
+    public ResponseEntity<List<DistrictDTO>> getAllDistrictByCode(@PathVariable("code") int code) {
+        log.debug("REST request to get list of Districts By Code : {}", code);
+        Optional<List<DistrictDTO>> districtDTO = districtService.findDistrictsByCodeIsLessThanZero(code);
+        if (!districtDTO.isPresent()) {
+            throw new ResourceNotFoundException("Not Found District with code = " + code);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body((List<DistrictDTO>) districtDTO.get());
+    }
+
+    /**
      * {@code PUT  /districts/:id} : Updates an existing district.
      *
      * @param id the id of the districtDTO to save.
@@ -167,9 +189,6 @@ public class DistrictResource {
             throw new BadRequestException("A new district cannot already have an ID " +  ENTITY_NAME + " id exists");
         }
         districtDTO = districtService.save(districtDTO);
-        //return new ResponseEntity<>(districtDTO, HttpStatus.CREATED);
-        //return ResponseEntity.created(new URI("/api/district/" + districtDTO.getId())).body(districtDTO);
-
         return ResponseEntity.created(new URI("/api/districts/" + districtDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, districtDTO.getId().toString()))
             .body(districtDTO);

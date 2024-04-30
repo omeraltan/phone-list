@@ -1,5 +1,6 @@
 package com.phone.api.service.dto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -12,19 +13,24 @@ import java.util.Objects;
 public class DistrictDTO implements Serializable {
 
     @Id
+    @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 0, max = 100)
+
+    @NotBlank(message = "{error.validation.empty.name}")
+    @NotNull(message = "{error.validation.null.name}")
+    @Size(min = 3, max = 10, message = "{error.validation.invalid.size.name}")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 0, max = 300)
+    @NotBlank(message = "{error.validation.empty.description}")
+    @NotNull(message = "{error.validation.null.description}")
+    @Size(min = 10, max = 150, message = "{error.validation.invalid.size.description}")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @NotNull
+    @NotNull(message = "Invalid City: City is NULL")
+    @Column(name = "code", nullable = false)
     private Integer code;
 
     public Long getId() {
