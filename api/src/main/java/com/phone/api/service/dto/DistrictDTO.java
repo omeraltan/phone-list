@@ -1,21 +1,31 @@
 package com.phone.api.service.dto;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A DTO for the {@link com.phone.api.domain.District} entity.
  */
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class DistrictDTO implements Serializable {
 
     @Id
     @Column(name = "id")
     private Long id;
-
 
     @NotBlank(message = "{error.validation.empty.name}")
     @NotNull(message = "{error.validation.null.name}")
@@ -32,38 +42,6 @@ public class DistrictDTO implements Serializable {
     @NotNull(message = "Invalid City: City is NULL")
     @Column(name = "code", nullable = false)
     private Integer code;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -86,13 +64,4 @@ public class DistrictDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    @Override
-    public String toString() {
-        return "DistrictDTO{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", code=" + code +
-            '}';
-    }
 }
