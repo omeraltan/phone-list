@@ -6,6 +6,7 @@ import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.service.mapper.DistrictMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,9 @@ public class DistrictService {
     private final Logger log = LoggerFactory.getLogger(DistrictService.class);
 
     private DistrictRepository districtRepository;
-
     private DistrictMapper districtMapper;
 
+    @Autowired
     public DistrictService(DistrictRepository districtRepository, DistrictMapper districtMapper) {
         this.districtRepository = districtRepository;
         this.districtMapper = districtMapper;

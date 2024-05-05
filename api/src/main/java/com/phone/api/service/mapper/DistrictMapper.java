@@ -7,5 +7,5 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link District} and its DTO {@link DistrictDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DistrictMapper extends EntityMapper<DistrictDTO, District>{}

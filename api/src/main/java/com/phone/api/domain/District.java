@@ -2,9 +2,7 @@ package com.phone.api.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -13,10 +11,14 @@ import java.io.Serializable;
 /**
  * A District.
  */
-@Entity
+@Setter
+@Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+
+@Entity
 @Table(name = "district")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
@@ -39,7 +41,40 @@ public class District implements Serializable {
     @Column(name = "code", nullable = false)
     private Integer code;
 
-    @OneToOne(mappedBy = "district")
-    private Customer customer;
+    public District id(Long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public District name(String name) {
+        this.setName(name);
+        return this;
+    }
+
+    public District description(String description) {
+        this.setDescription(description);
+        return this;
+    }
+
+    public District code(Integer code) {
+        this.setCode(code);
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof District)) {
+            return false;
+        }
+        return getId() != null && getId().equals(((District) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }
