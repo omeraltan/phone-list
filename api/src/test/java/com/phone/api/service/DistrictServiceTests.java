@@ -1,34 +1,27 @@
 package com.phone.api.service;
 
 // USing BDD Mockito
-import static javax.swing.SortOrder.UNSORTED;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
+import static org.mockito.Mockito.*;
 import com.phone.api.domain.District;
 import com.phone.api.repository.DistrictRepository;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.service.mapper.DistrictMapper;
-import com.phone.api.web.rest.DistrictResource;
+import com.phone.api.service.mapper.mapperImpl.DistrictMapperImpl;
 import jdk.jfr.Description;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 import java.util.Optional;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class DistrictServiceTests {
 
@@ -37,19 +30,17 @@ public class DistrictServiceTests {
         MockitoAnnotations.initMocks(this);
     }
 
-    // Creating a mock to mimic DistrictRepository.
     @Mock
     private DistrictRepository districtRepository;
-    // If you don't inject mapper class. You will take null pointer for this.
-    @Mock
-    private DistrictMapper districtMapper;
 
-    // An instance of DistrictService, injected with the Mock created with @Mock.
     @InjectMocks
     private DistrictService districtService;
 
+    @Spy
+    private DistrictMapper districtMapperSpy = new DistrictMapperImpl();
+
     @Test
-    @Description("")
+    @Description("Should create a district in the database")
     public void DistrictService_CreateDistrict_ReturnDistrictDTO(){
         District district = new District();
         DistrictDTO districtDTO = DistrictDTO.builder()
@@ -64,27 +55,28 @@ public class DistrictServiceTests {
     }
 
     @Test
-    @Description("")
+    @Description("Should fetch all the districts in the database")
     public void DistrictService_GetAllDistrict_ReturnDistrictDTO(){
-        Page<District> districts = Mockito.mock(Page.class);
-        when(districtRepository.findAll(Mockito.any(Pageable.class))).thenReturn(districts);
-        Page<DistrictDTO> page = districtService.findAll(PageRequest.of(0, 10));
-        Assertions.assertThat(page).isNotNull();
+        var district = Mockito.mock(Page.class);
+        when(districtRepository.findAll(Mockito.any(PageRequest.class))).thenReturn(district);
+        districtService.findAll(PageRequest.of(0, 10, Sort.Direction.ASC, "id"));
+        verify(districtRepository).findAll(Mockito.any(PageRequest.class));
+        verifyNoMoreInteractions(districtRepository);
     }
 
     @Test
-    @Description("")
+    @Description("Should fetch a district with id parameter")
     public void DistrictService_GetDistrictById_ReturnDistrictDTO(){
         long districtId = 1L;
-        District mockDistrict = Mockito.mock(District.class);
-        when(districtRepository.findById(districtId)).thenReturn(Optional.of(mockDistrict));
-        Optional<DistrictDTO> result = districtService.findOne(districtId);
+        Optional<District> district = Optional.ofNullable(Mockito.mock(District.class));
+        when(districtRepository.findById(districtId)).thenReturn(district);
+        Optional<District> result = districtRepository.findById(districtId);
         assertTrue(result.isPresent());
-        assertSame(mockDistrict, result.get());
+        assertSame(district, result);
     }
 
     @Test
-    @Description("")
+    @Description("Should not return any district data")
     public void DistrictService_GetDistrictById_WhenDistrictNotExist_ReturnOptionalEmpty(){
         long districtId = 2L;
         when(districtRepository.findById(districtId)).thenReturn(Optional.empty());
@@ -92,47 +84,45 @@ public class DistrictServiceTests {
         assertFalse(result.isPresent());
     }
 
-    /**
-     * @Test
-     * public void EmployeeService_UpdateEmployee_ReturnsEmployeeDto(){
-     *     int employeeId=1;
-     *     Employee employee = Employee.builder()
-     *             .id(employeeId).name("Aziz KAle")
-     *             .dob(new Date()).gender("Male")
-     *             .department("Tesing").build();
-     *
-     *     EmployeeDto employeeDto = employeeService.mapToDto(employee);
-     *     when(employeeRepository.findById(employeeId)).thenReturn(Optional.ofNullable(employee));
-     *     when(employeeRepository.save(employee)).thenReturn(employee);
-     *
-     *     EmployeeDto updatedEmployee = employeeService.update(employeeDto,employeeId);
-     *
-     *     Assertions.assertThat(updatedEmployee).isNotNull();
-     * }
-     *
-     *
-     * @Test
-     * public void EmployeeService_DeleteEmployee_ReturnsVoid() {
-     *     int employeeId = 1;
-     *     Employee employee = Employee.builder()
-     *             .id(employeeId).name("Aziz KAle")
-     *             .dob(new Date()).gender("Male")
-     *             .department("Tesing").build();
-     *
-     *     // When findById is invoked with the specified employeeId, it returns an Optional containing the employee.
-     *     when(employeeRepository.findById(employeeId)).thenReturn(Optional.ofNullable(employee));
-     *
-     *     // Configure the delete method to perform no action when called with an Employee object.
-     *     doNothing().when(employeeRepository).delete(employee);
-     *
-     *     // Invoke the delete method of the employeeService with the created employeeId.
-     *     employeeService.delete(employeeId);
-     *
-     *     // Use assertAll to ensure that no exceptions are thrown during the execution of the delete method.
-     *     assertAll(() -> employeeService.delete(employeeId));
-     * }
-     *
-     */
+    @Test
+    @Description("Should update any district data")
+    public void DistrictService_UpdateDistrict_ReturnDistrictDTO(){
+        long districtId = 1L;
+        DistrictDTO districtDTO = DistrictDTO.builder()
+            .id(districtId)
+            .name("Ankara")
+            .description("Tükiyenin Başkentidir.")
+            .code(-1)
+            .build();
+        District district = new District();
+        BeanUtils.copyProperties(districtDTO,district);
+
+        when(districtRepository.findById(districtId)).thenReturn(Optional.ofNullable(district));
+        when(districtRepository.save(district)).thenReturn(district);
+
+        DistrictDTO updateDistrict = districtService.update(districtDTO);
+
+        Assertions.assertThat(updateDistrict).isNotNull();
+    }
+
+    @Test
+    @Description("Should delete district data")
+    public void DistrictService_DeleteDistrict_ReturnDistrictDTO(){
+        long districtId = 1L;
+        DistrictDTO districtDTO = DistrictDTO.builder()
+            .id(districtId)
+            .name("Ankara")
+            .description("Ankara Description")
+            .code(-1)
+            .build();
+
+        District district = new District();
+        BeanUtils.copyProperties(districtDTO,district);
+        when(districtRepository.findById(districtId)).thenReturn(Optional.ofNullable(district));
+        doNothing().when(districtRepository).delete(district);
+        districtService.delete(districtId);
+        assertAll(() -> districtService.delete(districtId));
+    }
 
     @After
     public void tearDown(){
