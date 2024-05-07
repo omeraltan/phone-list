@@ -97,7 +97,7 @@ export const District = () => {
     axios
       .post('http://localhost:8080/api/district', values)
       .then(response => {
-        console.log('Yen District Veri: ', response.data);
+        console.log('Yeni District Veri: ', response.data);
       })
       .catch(error => {
         console.log(error);
