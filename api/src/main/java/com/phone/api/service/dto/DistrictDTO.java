@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * A DTO for the {@link com.phone.api.domain.District} entity.
  */
-@Entity
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -23,14 +23,13 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class DistrictDTO implements Serializable {
 
-    @Id
     @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "{error.validation.empty.name}")
     @NotNull(message = "{error.validation.null.name}")
-    @Size(min = 3, max = 10, message = "{error.validation.invalid.size.name}")
-    @Column(name = "name", nullable = false)
+    @Size(min = 3, max = 20, message = "{error.validation.invalid.size.name}")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @NotBlank(message = "{error.validation.empty.description}")
