@@ -1,5 +1,7 @@
 package com.phone.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -7,12 +9,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A District.
  */
-@Setter
-@Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +44,17 @@ public class District implements Serializable {
     @NotNull
     @Column(name = "code", nullable = false)
     private Integer code;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
+    @JsonIgnoreProperties(value = {"district"}, allowSetters = true)
+    private Set<Customer> customers = new HashSet<>();
+
+    public District(Long id, String name, String description, Integer code) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.code = code;
+    }
 
     public District id(Long id) {
         this.setId(id);

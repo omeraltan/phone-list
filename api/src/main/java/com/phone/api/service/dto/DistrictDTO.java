@@ -1,8 +1,6 @@
 package com.phone.api.service.dto;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,26 +39,5 @@ public class DistrictDTO implements Serializable {
     @NotNull(message = "Invalid City: City is NULL")
     @Column(name = "code", nullable = false)
     private Integer code;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DistrictDTO)) {
-            return false;
-        }
-
-        DistrictDTO districtDTO = (DistrictDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, districtDTO.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
 
 }

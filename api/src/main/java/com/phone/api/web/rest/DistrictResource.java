@@ -1,5 +1,6 @@
 package com.phone.api.web.rest;
 
+import com.phone.api.domain.District;
 import com.phone.api.repository.DistrictRepository;
 import com.phone.api.service.DistrictService;
 import com.phone.api.service.dto.DistrictDTO;
@@ -18,7 +19,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,7 +39,7 @@ import java.util.Optional;
  */
 
 /**
- * REST controller for managing {@link com.phone.api.domain.District}.
+ * REST controller for managing {@link District}.
  */
 @RestController
 @RequestMapping("/api/district")
