@@ -1,6 +1,5 @@
 package com.phone.api.service.dto;
 
-import com.phone.api.domain.District;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +41,5 @@ public class CustomerDTO implements Serializable {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @OneToOne
-    private District district;
+    private DistrictDTO district;
 }
