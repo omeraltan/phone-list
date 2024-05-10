@@ -1,9 +1,9 @@
 package com.phone.api.web.rest;
 
 import com.phone.api.domain.District;
+import com.phone.api.exception.CustomerAmountException;
 import com.phone.api.repository.CustomerRepository;
 import com.phone.api.repository.DistrictRepository;
-import com.phone.api.service.CustomerService;
 import com.phone.api.service.DistrictService;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.utilty.HeaderUtil;
@@ -49,6 +49,8 @@ import java.util.Optional;
 public class DistrictResource {
 
     private final Logger log = LoggerFactory.getLogger(DistrictResource.class);
+
+    private static final Integer CUSTOMER_AMOUNT_OF_USER_ZERO = 0;
     private static final String ENTITY_NAME = "DISTRICT";
     private final CustomerRepository customerRepository;
 
@@ -56,13 +58,11 @@ public class DistrictResource {
     private String applicationName;
 
     private final DistrictService districtService;
-    private final CustomerService customerService;
     private final DistrictRepository districtRepository;
 
-    public DistrictResource(DistrictService districtService, DistrictRepository districtRepository, CustomerService customerService, CustomerRepository customerRepository) {
+    public DistrictResource(DistrictService districtService, DistrictRepository districtRepository, CustomerRepository customerRepository) {
         this.districtService = districtService;
         this.districtRepository = districtRepository;
-        this.customerService = customerService;
         this.customerRepository = customerRepository;
     }
 
@@ -221,11 +221,8 @@ public class DistrictResource {
         if (!districtRepository.existsById(id)) {
             throw new ResourceNotFoundException("Not Found District with id = " + id);
         }
-        if (customerRepository.findAllCustomersAmountThatUsingDistricts(id) > 0) {
-            throw new ResourceNotFoundException("Not Found Customers of District with id = " + id);
-            /**
-             * TODO : Burada kaldım. Count miktarının sıfırdan büyük olması sonucu bir hata fırlatması gerekir. Bundan dolayı contorller advice a yeni bir method eklememiz gerekmektedir.
-             */
+        if (customerRepository.findAllCustomersAmountThatUsingDistricts(id) > CUSTOMER_AMOUNT_OF_USER_ZERO) {
+            throw new CustomerAmountException("Found Customers of District with id = " + id);
         }
         districtService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
