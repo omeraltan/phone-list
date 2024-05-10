@@ -6,7 +6,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * A Customer
@@ -33,6 +32,9 @@ public class Customer implements Serializable {
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(name = "address", nullable = false)
+    private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = {"customers"}, allowSetters = true)
@@ -90,6 +92,14 @@ public class Customer implements Serializable {
         this.district = district;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -110,6 +120,7 @@ public class Customer implements Serializable {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
+            ", address='" + address + '\'' +
             ", district=" + district +
             '}';
     }

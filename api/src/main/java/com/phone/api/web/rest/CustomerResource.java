@@ -5,7 +5,9 @@ import com.phone.api.exception.BadRequestException;
 import com.phone.api.exception.ResourceNotFoundException;
 import com.phone.api.repository.CustomerRepository;
 import com.phone.api.service.CustomerService;
+import com.phone.api.service.DistrictService;
 import com.phone.api.service.dto.CustomerDTO;
+import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.utilty.HeaderUtil;
 import com.phone.api.utilty.PaginationUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link Customer}.
@@ -46,11 +49,13 @@ public class CustomerResource {
     private String applicationName;
 
     private final CustomerService customerService;
+    private final DistrictService districtService;
     private final CustomerRepository customerRepository;
 
     @Autowired
-    public CustomerResource(CustomerService customerService, CustomerRepository customerRepository) {
+    public CustomerResource(CustomerService customerService, DistrictService districtService, CustomerRepository customerRepository) {
         this.customerService = customerService;
+        this.districtService = districtService;
         this.customerRepository = customerRepository;
     }
 
@@ -99,6 +104,56 @@ public class CustomerResource {
         Page<CustomerDTO> page = customerService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /cities} : get all the cities with code information.
+     *
+     * @param code the code information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of cities in body.
+     */
+    @GetMapping("/cities/{code}")
+    @Operation(
+        description = "Get Cities Service For Dropdown",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the City/Cities", content = @Content(schema = @Schema(implementation = DistrictDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get All Cities For City Dropdown with code -1"
+    )
+    public ResponseEntity<List<DistrictDTO>> getAllCitiesByCode(@PathVariable("code") int code) {
+        log.debug("REST request to get list of Districts By Code : {}", code);
+        Optional<List<DistrictDTO>> districtDTO = districtService.findDistrictsByCodeIsLessThanZero(code);
+        if (!districtDTO.isPresent()) {
+            throw new ResourceNotFoundException("Not Found City with code = " + code);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(districtDTO.get());
+    }
+
+    /**
+     * {@code GET /districts} : get all the districts with code information.
+     *
+     * @param code the code information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of districts in body.
+     */
+    @GetMapping("/districts/{code}")
+    @Operation(
+        description = "Get Districts Service For Dropdown",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the City/Cities", content = @Content(schema = @Schema(implementation = DistrictDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get All Districts For District Dropdown with code greater than zero"
+    )
+    public ResponseEntity<List<DistrictDTO>> getAllDistrictsWithCity(@PathVariable("code") int code) {
+        log.debug("REST request to get list of Districts By City : {}", code);
+        Optional<List<DistrictDTO>> districtDTOS = districtService.findDistrictsByCodeIsGreaterThanZero(code);
+        if (!districtDTOS.isPresent()) {
+            throw new ResourceNotFoundException("Not Found District / Districts with code = " + code);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(districtDTOS.get());
     }
 
     /**
