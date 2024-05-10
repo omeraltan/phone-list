@@ -133,7 +133,7 @@ public class DistrictResource {
     }
 
     /**
-     * {@code PUT  /districts/:id} : Updates an existing district.
+     * {@code PUT  /district/:id} : Updates an existing district.
      *
      * @param id the id of the districtDTO to save.
      * @param districtDTO the districtDTO to update.
@@ -195,7 +195,7 @@ public class DistrictResource {
     }
 
     /**
-     * {@code DELETE  /districts/:id} : delete the "id" district.
+     * {@code DELETE  /district/:id} : delete the "id" district.
      *
      * @param id the id of the districtDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
