@@ -69,11 +69,7 @@ public class DistrictServiceTests {
     @Description("Should create a district in the database")
     public void DistrictService_CreateDistrict_ReturnDistrictDTO(){
         District district = new District();
-        DistrictDTO districtDTO = DistrictDTO.builder()
-            .name("Ankara")
-            .description("Ankara Description")
-            .code(-1)
-            .build();
+        DistrictDTO districtDTO = new DistrictDTO("Ankara", "Ankara Description", -1);
         BeanUtils.copyProperties(districtDTO,district);
         when(districtRepository.save(Mockito.any(District.class))).thenReturn(district);
         DistrictDTO savedDistrict = districtService.save(districtDTO);
@@ -114,12 +110,7 @@ public class DistrictServiceTests {
     @Description("Should update any district data")
     public void DistrictService_UpdateDistrict_ReturnDistrictDTO(){
         long districtId = 1L;
-        DistrictDTO districtDTO = DistrictDTO.builder()
-            .id(districtId)
-            .name("Ankara")
-            .description("Tükiyenin Başkentidir.")
-            .code(-1)
-            .build();
+        DistrictDTO districtDTO = new DistrictDTO("Ankara", "Ankara Description", -1);
         District district = new District();
         BeanUtils.copyProperties(districtDTO,district);
 
@@ -135,12 +126,7 @@ public class DistrictServiceTests {
     @Description("Should delete district data")
     public void DistrictService_DeleteDistrict_ReturnDistrictDTO(){
         long districtId = 1L;
-        DistrictDTO districtDTO = DistrictDTO.builder()
-            .id(districtId)
-            .name("Ankara")
-            .description("Ankara Description")
-            .code(-1)
-            .build();
+        DistrictDTO districtDTO = new DistrictDTO("Ankara", "Ankara Description", -1);
 
         District district = new District();
         BeanUtils.copyProperties(districtDTO,district);

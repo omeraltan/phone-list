@@ -6,6 +6,7 @@ import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.mapper.CustomerMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,13 @@ public class CustomerService {
 
     private final Logger log = LoggerFactory.getLogger(CustomerService.class);
 
-    private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final CustomerRepository customerRepository;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
-        this.customerRepository = customerRepository;
+    @Autowired
+    public CustomerService(CustomerMapper customerMapper, CustomerRepository customerRepository) {
         this.customerMapper = customerMapper;
+        this.customerRepository = customerRepository;
     }
 
     /**
@@ -65,5 +67,28 @@ public class CustomerService {
         Customer customer = customerMapper.toEntity(customerDTO);
         customer = customerRepository.save(customer);
         return customerMapper.toDto(customer);
+    }
+
+    /**
+     * Update a customer.
+     *
+     * @param customerDTO the entity to save.
+     * @return the persisted entity.
+     */
+    public CustomerDTO update(CustomerDTO customerDTO) {
+        log.debug("Request to update Customer : {}", customerDTO);
+        Customer customer = customerMapper.toEntity(customerDTO);
+        customer = customerRepository.save(customer);
+        return customerMapper.toDto(customer);
+    }
+
+    /**
+     * Delete the customer by id.
+     *
+     * @param id the id of the entity.
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete Customer : {}", id);
+        customerRepository.deleteById(id);
     }
 }

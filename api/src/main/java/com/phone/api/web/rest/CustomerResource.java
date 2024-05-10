@@ -29,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * REST controller for managing {@link Customer}.
@@ -84,7 +85,7 @@ public class CustomerResource {
      */
     @GetMapping("")
     @Operation(
-        description = "Get Customers Service",
+        description = "Get All Customers Service",
         responses = {
             @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer/Customers", content = @Content(schema = @Schema(implementation = CustomerDTO.class))),
             @ApiResponse(responseCode = "400", ref = "badRequest"),
@@ -128,4 +129,62 @@ public class CustomerResource {
             .body(customerDTO);
     }
 
+    /**
+     * {@code PUT  /customer/:id} : Updates an existing customer.
+     *
+     * @param id the id of the customerDTO to save.
+     * @param customerDTO the customerDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated customerDTO,
+     * or with status {@code 400 (Bad Request)} if the customerDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the customerDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/{id}")
+    @Operation(
+        description = "Update Customer Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer", content = @Content(schema = @Schema(implementation = CustomerDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Update A Customer"
+    )
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody CustomerDTO customerDTO) throws URISyntaxException {
+        log.debug("REST request to update Customer : {}, {}", id, customerDTO);
+        if (customerDTO.getId() == null) {
+            throw new BadRequestException("Invalid id" + customerDTO.getId());
+        }
+        if (!Objects.equals(id, customerDTO.getId())) {
+            throw new ResourceNotFoundException("Invalid id = " + customerDTO.getId());
+        }
+        if (!customerRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Not Found Customer with id = " + id);
+        }
+        return new ResponseEntity<>(customerService.update(customerDTO), HttpStatus.OK);
+    }
+
+    /**
+     * {@code DELETE  /customer/:id} : delete the "id" customer.
+     *
+     * @param id the id of the customerDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/{id}")
+    @Operation(
+        description = "Delete Customer Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer", content = @Content(schema = @Schema(implementation = CustomerDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Delete A Customer"
+    )
+    public ResponseEntity<Void> deleteCustomer(@PathVariable(value = "id", required = false) final Long id) {
+        log.debug("REST request to delete Customer : {}", id);
+        if (!customerRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Not Found Customer with id = " + id);
+        }
+        customerService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
