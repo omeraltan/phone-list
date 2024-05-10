@@ -55,6 +55,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CustomerAmountException.class)
+    public ResponseEntity<ErrorMessage> handleCustomerAmountException(CustomerAmountException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+          HttpStatus.NOT_ACCEPTABLE.value(),
+          new Date(),
+          ex.getMessage(),
+          request.getDescription(true));
+        return new ResponseEntity<>(message, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
         Map<String, List<String>> errorResponse = new HashMap<>();
         errorResponse.put("errors", errors);
