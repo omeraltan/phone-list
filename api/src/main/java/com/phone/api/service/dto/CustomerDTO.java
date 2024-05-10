@@ -31,6 +31,11 @@ public class CustomerDTO implements Serializable {
     @Email(message = "{error.validation.constraints.email.message}")
     private String email;
 
+    @NotBlank(message = "{error.validation.empty.address}")
+    @NotNull(message = "{error.validation.null.address}")
+    @Size(min = 10, max = 200, message = "{error.validation.invalid.size.address}")
+    private String address;
+
     private DistrictDTO districtDTO;
 
     public Long getId() {
@@ -63,6 +68,14 @@ public class CustomerDTO implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public DistrictDTO getDistrictDTO() {

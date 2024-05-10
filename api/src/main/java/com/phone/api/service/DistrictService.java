@@ -1,8 +1,12 @@
 package com.phone.api.service;
 
+import com.phone.api.domain.Customer;
 import com.phone.api.domain.District;
+import com.phone.api.repository.CustomerRepository;
 import com.phone.api.repository.DistrictRepository;
+import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.DistrictDTO;
+import com.phone.api.service.mapper.CustomerMapper;
 import com.phone.api.service.mapper.DistrictMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +29,14 @@ public class DistrictService {
 
     private final DistrictRepository districtRepository;
     private final DistrictMapper districtMapper;
+    private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
 
-    public DistrictService(DistrictRepository districtRepository, DistrictMapper districtMapper) {
+    public DistrictService(DistrictRepository districtRepository, DistrictMapper districtMapper, CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.districtRepository = districtRepository;
         this.districtMapper = districtMapper;
+        this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
     }
 
     /**
@@ -43,6 +51,12 @@ public class DistrictService {
         return districtRepository.findById(id).map(districtMapper::toDto);
     }
 
+    /**
+     * Get all the cities. Actually, we take the districts with code.
+     *
+     * @param code the state information.
+     * @return the list of entities.
+     */
     @Transactional
     public Optional<List<DistrictDTO>> findDistrictsByCodeIsLessThanZero(int code) {
         log.debug("Request to get District By Code Less Then Zero : {}", code);
@@ -50,6 +64,20 @@ public class DistrictService {
         List<DistrictDTO> districtDTO = districtMapper.toDto(district);
         return districtDTO == null ? Optional.empty() : Optional.of(districtDTO);
         //return districtRepository.findDistrictsByCodeIsLessThan(code).map(districtMapper::toDto);
+    }
+
+    /**
+     * Get all the districts. Actually, we take the districts with code.
+     *
+     * @param code the state information.
+     * @return the list of entities.
+     */
+    @Transactional
+    public Optional<List<DistrictDTO>> findDistrictsByCodeIsGreaterThanZero(int code) {
+        log.debug("Request to get District By Code Greater Then Zero : {}", code);
+        List<District> districts = districtRepository.findDistrictsByCodeIsGreaterThanZero(code);
+        List<DistrictDTO> districtDTO = districtMapper.toDto(districts);
+        return districtDTO == null ? Optional.empty() : Optional.of(districtDTO);
     }
 
     /**

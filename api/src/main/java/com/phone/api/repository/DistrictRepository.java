@@ -14,4 +14,7 @@ public interface DistrictRepository extends JpaRepository<District, Long> {
     @Query("SELECT a FROM District a WHERE a.code = :code")
     List<District> findDistrictsByCodeIsLessThan(@Param("code") int code);
 
+    @Query("SELECT a FROM District a WHERE a.code = :code")
+    List<District> findDistrictsByCodeIsGreaterThanZero(@Param("code") int code);
+
 }
