@@ -1,17 +1,45 @@
 package com.phone.api.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.examples.Example;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@OpenAPIDefinition
+@OpenAPIDefinition(
+    info = @Info(
+        contact = @Contact(
+            name = "Ömer ALTAN",
+            email = "omeraltan66@gmail.com",
+            url = "https://omeraltan.com/course"
+        ),
+        description = "OpenApi documentation for Phone-List",
+        title = "OpenApi Specification - Ömer ALTAN",
+        version = "1.0",
+        license = @License(
+            name = "Licence name",
+            url = "http://some-url.com"
+        ),
+        termsOfService = "Terms of service"
+    ),
+    servers = {
+        @Server(
+            description = "Local ENV",
+            url = "http://localhost:8080"
+        ),
+        @Server(
+            description = "PROD ENV",
+            url = "https://omeraltan.com/course"
+        )
+    }
+)
 @Configuration
 public class OpenApiConfig {
 
@@ -26,22 +54,14 @@ public class OpenApiConfig {
             new Content().addMediaType("application/json", new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
                 new Example().value("{\"code\" : 500, \"status\" : \"Internal Server Error\", \"Message\" : \"Internal Server Error\"}}"))));
 
-        ApiResponse successfulResponse = new ApiResponse().content(
-            new Content().addMediaType("application/json", new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                new Example().value("{\"name\" : \"string\",\"surname\" : \"string\",\"age\" : 0}"))));
+//        ApiResponse successfulResponse = new ApiResponse().content(
+//            new Content().addMediaType("application/json", new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+//                new Example().value("{\"name\" : \"string\",\"surname\" : \"string\",\"age\" : 0}"))));
 
         Components components = new Components();
         components.addResponses("badRequest", badRequest);
         components.addResponses("internalServerError", internalServerError);
-        components.addResponses("successfulResponse", successfulResponse);
-        return new OpenAPI().components(components)
-                            .info(new Info()
-                            .title("Phone_List_Swagger Project OPENAPI Docs")
-                            .version("1.0.0")
-                                .description("Phone List Application")
-                                .contact(new Contact()
-                                    .url("https://github.com/omeraltan")
-                                    .name("Ömer ALTAN")
-                                    .email("omeraltan66@gmail.com")));
+        //components.addResponses("successfulResponse", successfulResponse);
+        return new OpenAPI().components(components);
     }
 }
