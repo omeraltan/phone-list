@@ -110,6 +110,10 @@ export const District = () => {
 
   };
 
+  const actionBodyTemplate = (rowData) => {
+    return <Button type='button' icon="pi pi-trash" size='small' severity='danger' outlined aria-label="Cancel" rounded tooltip='Customer tarafından kullanılmayan satırlar silinebilecektir.' tooltipOptions={{position:"left"}}/>
+  }
+
   return (
     <div>
       <div className="card flex justify-content-center">
@@ -205,6 +209,7 @@ export const District = () => {
             <Column field="name" header="City" style={{ minWidth: '12rem' }} />
             <Column field="description" header="District" style={{ minWidth: '12rem' }} />
             <Column field="code" header="Code" style={{ minWidth: '12rem' }} />
+            <Column header="process" body={actionBodyTemplate}/>
           </DataTable>
         </div>
       )}
