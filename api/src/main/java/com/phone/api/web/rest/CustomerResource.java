@@ -159,7 +159,7 @@ public class CustomerResource {
     }
 
     /**
-     * {@code POST  /customers} : Create a new customer.
+     * {@code POST  /customer} : Create a new customer.
      *
      * @param customerDTO the customerDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new customerDTO, or with status {@code 400 (Bad Request)} if the customer has already an ID.

@@ -54,14 +54,14 @@ public class OpenApiConfig {
             new Content().addMediaType("application/json", new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
                 new Example().value("{\"code\" : 500, \"status\" : \"Internal Server Error\", \"Message\" : \"Internal Server Error\"}}"))));
 
-//        ApiResponse successfulResponse = new ApiResponse().content(
-//            new Content().addMediaType("application/json", new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-//                new Example().value("{\"name\" : \"string\",\"surname\" : \"string\",\"age\" : 0}"))));
+        ApiResponse successfulResponse = new ApiResponse().content(
+            new Content().addMediaType("application/json", new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+                new Example().value("{\"name\" : \"string\",\"surname\" : \"string\",\"age\" : 0}"))));
 
         Components components = new Components();
         components.addResponses("badRequest", badRequest);
         components.addResponses("internalServerError", internalServerError);
-        //components.addResponses("successfulResponse", successfulResponse);
+        components.addResponses("successfulResponse", successfulResponse);
         return new OpenAPI().components(components);
     }
 }
