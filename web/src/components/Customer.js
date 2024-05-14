@@ -82,11 +82,25 @@ const Customer = () => {
     setFirstName('');
     setLastName('');
     setEmail('');
+    setAddress('');
     setSelectedCity(null);
     setSelectedDistrict(null);
+    setLogic(!logic);
 
     //window.location.reload();
   };
+
+  const deleteCustomer = (rowData) => {
+    axios
+    .delete(`http://localhost:8080/api/customer/${rowData.id}`)
+    .then(response => {
+      console.log('Delete Customer: ', response.data );
+    })
+    .catch(error => {
+      console.log(error);
+    });
+    setLogic(!logic);
+  }
 
   const onGlobalFilterChange = e => {
     const value = e.target.value;
@@ -110,6 +124,10 @@ const Customer = () => {
   const paginatorRight = <Button type="button" icon="pi pi-download" text />;
 
   const header = renderHeader();
+
+  const actionBodyTemplate = (rowData) => {
+    return <Button type='button' icon="pi pi-trash" size='small' severity='danger' outlined aria-label="Cancel" rounded onClick={() => deleteCustomer(rowData)}/>
+  }
 
   return (
     <div className="formgrid grid">
@@ -182,6 +200,7 @@ const Customer = () => {
         <Column field="email" header="Email" style={{ minWidth: '12rem' }} />
         <Column field="address" header="Address" style={{ minWidth: '12rem' }} />
         <Column field="districtDTO.name" header="District" style={{ minWidth: '12rem' }} />
+        <Column header="Process" body={actionBodyTemplate}/>
       </DataTable>
     </div>
   );

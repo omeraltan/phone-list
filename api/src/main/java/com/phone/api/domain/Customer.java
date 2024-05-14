@@ -6,6 +6,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Customer
@@ -40,6 +42,11 @@ public class Customer implements Serializable {
     @JsonIgnoreProperties(value = {"customers"}, allowSetters = true)
     @JoinColumn(name = "district_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "Fk_customer_district_id"))
     private District district;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = {"customer"}, allowSetters = true)
+    private Set<Phone> phones = new HashSet<>();
 
     public Customer() {
     }
@@ -98,6 +105,14 @@ public class Customer implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Set<Phone> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(Set<Phone> phones) {
+        this.phones = phones;
     }
 
     @Override

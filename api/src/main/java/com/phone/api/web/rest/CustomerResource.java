@@ -181,7 +181,7 @@ public class CustomerResource {
             throw new BadRequestException("A new customer cannot already have an ID " +  ENTITY_NAME + " id exists");
         }
         customerDTO = customerService.save(customerDTO);
-        return ResponseEntity.created(new URI("/api/customers/" + customerDTO.getId()))
+        return ResponseEntity.created(new URI("/api/customer/" + customerDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, customerDTO.getId().toString()))
             .body(customerDTO);
     }
