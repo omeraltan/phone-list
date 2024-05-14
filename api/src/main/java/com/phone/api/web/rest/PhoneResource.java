@@ -1,7 +1,7 @@
 package com.phone.api.web.rest;
 
-import com.phone.api.domain.Phone;
 import com.phone.api.exception.BadRequestException;
+import com.phone.api.exception.ResourceNotFoundException;
 import com.phone.api.service.PhoneService;
 import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.PhoneDTO;
@@ -15,11 +15,14 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/phone")
@@ -38,6 +41,30 @@ public class PhoneResource {
         this.phoneService = phoneService;
     }
 
+    /**
+     * {@code GET  /customers} : get all the customers.
+     *
+     * @param -
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of customers in body.
+     */
+    @GetMapping("/customers")
+    @Operation(
+        description = "Get All Customers Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer/Customers", content = @Content(schema = @Schema(implementation = CustomerDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get All Customers For Phones (Dropdown)"
+    )
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        log.debug("REST request to get all Customers for phone page");
+        Optional<List<CustomerDTO>> customerDTO = phoneService.findAll();
+        if (!customerDTO.isPresent()) {
+            throw new ResourceNotFoundException("Not Found Customer / Customers");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(customerDTO.get());
+    }
 
     /**
      * {@code POST  /phone} : Create a new phone.

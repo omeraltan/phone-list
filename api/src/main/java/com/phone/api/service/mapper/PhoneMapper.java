@@ -3,7 +3,6 @@ package com.phone.api.service.mapper;
 import com.phone.api.domain.Customer;
 import com.phone.api.domain.Phone;
 import com.phone.api.service.dto.CustomerDTO;
-import com.phone.api.service.dto.CustomerForPhoneDTO;
 import com.phone.api.service.dto.PhoneDTO;
 import org.mapstruct.*;
 
