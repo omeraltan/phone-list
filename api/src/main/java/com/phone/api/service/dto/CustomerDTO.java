@@ -51,7 +51,12 @@ public class CustomerDTO implements Serializable {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName.trim().toUpperCase();
+        if (firstName == null){
+            this.firstName = null;
+        }
+        else {
+            this.firstName = firstName.trim().toUpperCase();
+        }
     }
 
     public String getLastName() {
@@ -59,7 +64,12 @@ public class CustomerDTO implements Serializable {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName.trim().toUpperCase();
+        if (lastName == null){
+            this.lastName = null;
+        }
+        else {
+            this.lastName = lastName.trim().toUpperCase();
+        }
     }
 
     public String getEmail() {
@@ -87,7 +97,12 @@ public class CustomerDTO implements Serializable {
     }
 
     public String getJoinName(){
-        return this.firstName + " " + this.lastName;
+        if (getFirstName() == null && getLastName() == null) {
+            return null;
+        }
+        else {
+            return getFirstName() + " " + getLastName();
+        }
     }
 
     @Override

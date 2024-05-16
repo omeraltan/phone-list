@@ -15,7 +15,7 @@ function App() {
       <TabView>
         <TabPanel header="Customer Phone List" leftIcon="pi pi-phone mr-2 pi-spin" style={{fontSize: '12px'}}>
           <br/>
-          <CustomerPhoneList />
+          <CustomerPhoneList param={true}/>
         </TabPanel>
         <TabPanel header="Customer" leftIcon="pi pi-users mr-2" style={{fontSize: '12px'}}>
           <Customer />

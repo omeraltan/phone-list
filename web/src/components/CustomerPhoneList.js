@@ -12,12 +12,14 @@ import { InputMask } from 'primereact/inputmask';
 import { FloatLabel } from 'primereact/floatlabel';
 import { Dropdown } from 'primereact/dropdown';
 
-const CustomerPhoneList = () => {
+const CustomerPhoneList = (props) => {
   const [filters, setFilters] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [customer, setCustomer] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [logic, setLogic] = useState(false);
+  const [number, setNumber] = useState();
+  const [data, setData] = useState();
 
   useEffect(() => {
     initFilters();
@@ -25,27 +27,29 @@ const CustomerPhoneList = () => {
 
   useEffect(() => {
     axios
-        .get('http://localhost:8080/api/phone/customers')
+        .get('http://localhost:8080/api/phone/phones')
         .then(response => {
-          setCustomer(response?.data);
-          console.log("Customers : ", customer);
+          setData(response.data);
+          console.log('Table:', response.data);
         })
         .catch(error => {
           console.log(error);
         });
   }, [logic]);
 
-  const formatDate = value => {
-    return value.toLocaleDateString('en-US', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  };
-
-  const formatCurrency = value => {
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-  };
+  useEffect(() => {
+    if (props.param === true) {
+      axios
+        .get('http://localhost:8080/api/phone/customers')
+        .then(response => {
+          setCustomer(response?.data);
+          console.log('Customers : ', customer);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }, [logic]);
 
   const onGlobalFilterChange = e => {
     const value = e.target.value;
@@ -80,42 +84,11 @@ const CustomerPhoneList = () => {
     );
   };
 
-  const countryBodyTemplate = rowData => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <img
-          alt="flag"
-          src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png"
-          className={`flag flag-${rowData.country.code}`}
-          style={{ width: '24px' }}
-        />
-        <span>{rowData.country.name}</span>
-      </div>
-    );
-  };
 
-  const representativeBodyTemplate = rowData => {
-    const representative = rowData.representative;
 
-    return (
-      <div className="flex align-items-center gap-2">
-        <img alt={representative.name} src={`https://primefaces.org/cdn/primereact/images/avatar/${representative.image}`} width="32" />
-        <span>{representative.name}</span>
-      </div>
-    );
-  };
+  
 
-  const dateBodyTemplate = rowData => {
-    return formatDate(rowData.date);
-  };
 
-  const balanceBodyTemplate = rowData => {
-    return formatCurrency(rowData.balance);
-  };
-
-  const statusBodyTemplate = rowData => {
-    return '';
-  };
 
   const activityBodyTemplate = rowData => {
     return <ProgressBar value={rowData.activity} showValue={false} style={{ height: '6px' }}></ProgressBar>;
@@ -125,28 +98,62 @@ const CustomerPhoneList = () => {
   const paginatorRight = <Button type="button" icon="pi pi-download" text />;
   const header = renderHeader();
 
+  const savePhone = () => {
+    console.log('Telefon Number : ', number);
+    const values = {
+      phoneNumber: number,
+      customerDTO: {
+        id: selectedCustomer?.id,
+      },
+    };
+    axios
+      .post('http://localhost:8080/api/phone', values)
+      .then(response => {
+        console.log('Yeni Phone Veri: ', response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    setLogic(!logic);
+    //window.location.reload();
+  };
+
   return (
     <div className="card">
       <div>
         <FloatLabel>
           <Dropdown
-              inputId="dd-city"
-              value={selectedCustomer}
-              onChange={e => setSelectedCustomer(e.value)}
-              options={customer}
-              optionLabel="joinName"
-              className="w-full"
-              style={{ width: 270 }}
-            />
+            inputId="dd-customer"
+            value={selectedCustomer}
+            onChange={e => setSelectedCustomer(e.value)}
+            options={customer}
+            optionLabel="joinName"
+            className="w-full md:w-14rem"
+            filter
+            style={{ width: 270 }}
+          />
+          <label htmlFor="dd-customer">Select a Customer</label>
         </FloatLabel>
       </div>
-      <br/>
+      <br />
       <div>
-        <InputMask id="phone" mask="(9999) 999-99-99" placeholder="(0500) 444-44-44" />
+        <InputMask
+          id="phone"
+          mask="(9999) 999-99-99"
+          placeholder="(0500) 444-44-44"
+          value={number}
+          onChange={e => setNumber(e.target.value)}
+        />
       </div>
-      <br/>
+      <br />
+      <div>
+        <Button label="Save Phone" icon="pi pi-save" style={{ width: 200 }} onClick={savePhone} />
+      </div>
+      <br />
+      <br />
       <div>
         <DataTable
+          value={data}
           paginator
           showGridlines
           rows={5}
@@ -165,13 +172,13 @@ const CustomerPhoneList = () => {
           style={{ fontSize: '12px' }}
           emptyMessage="No customers found."
         >
-          <Column field="index" header="Index" />
-          <Column field="name" header="First Name" style={{ minWidth: '12rem' }} />
-          <Column header="Last Name" filterField="country.name" style={{ minWidth: '12rem' }} body={countryBodyTemplate} />
-          <Column header="E-mail" style={{ minWidth: '14rem' }} body={representativeBodyTemplate} />
-          <Column header="City" dataType="date" style={{ minWidth: '10rem' }} body={dateBodyTemplate} />
-          <Column header="District" dataType="numeric" style={{ minWidth: '10rem' }} body={balanceBodyTemplate} />
-          <Column field="status" header="Address" style={{ minWidth: '12rem' }} body={statusBodyTemplate} />
+          <Column header="Index" body={(data, options) => options.rowIndex + 1} style={{ fontSize: '12px', textAlign: 'center' }} />
+          <Column field="customerDTO.firstName" header="First Name" style={{ minWidth: '12rem' }} />
+          <Column field="customerDTO.lastName" header="Last Name" style={{ minWidth: '12rem' }} />
+          <Column field="customerDTO.email" header="E-mail" style={{ minWidth: '14rem' }}  />
+          <Column header="City" style={{ minWidth: '10rem' }}  />
+          <Column header="District" style={{ minWidth: '10rem' }} />
+          <Column field="status" header="Address" style={{ minWidth: '12rem' }} />
           <Column
             field="activity"
             header="İşlem"

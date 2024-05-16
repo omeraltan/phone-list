@@ -6,6 +6,7 @@ import com.phone.api.service.PhoneService;
 import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.PhoneDTO;
 import com.phone.api.utilty.HeaderUtil;
+import com.phone.api.utilty.PaginationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,10 +15,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -67,6 +73,30 @@ public class PhoneResource {
     }
 
     /**
+     * {@code GET  /phones} : get all the phones.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of phones in body.
+     */
+    @GetMapping("/phones")
+    @Operation(
+        description = "Get All Phones Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer/Customers", content = @Content(schema = @Schema(implementation = PhoneDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get All Phones"
+    )
+    public ResponseEntity<List<PhoneDTO>> getAllPhones(@ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of Phones");
+
+        Page<PhoneDTO> page = phoneService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
      * {@code POST  /phone} : Create a new phone.
      *
      * @param phoneDTO the phoneDTO to create.
@@ -93,5 +123,4 @@ public class PhoneResource {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, phoneDTO.getId().toString()))
             .body(phoneDTO);
     }
-
 }
