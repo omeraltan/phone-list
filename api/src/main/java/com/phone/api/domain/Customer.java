@@ -43,7 +43,7 @@ public class Customer implements Serializable {
     @JoinColumn(name = "district_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "Fk_customer_district_id"))
     private District district;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = {"customer"}, allowSetters = true)
     private Set<Phone> phones = new HashSet<>();

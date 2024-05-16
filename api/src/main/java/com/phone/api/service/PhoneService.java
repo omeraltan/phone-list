@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,4 +58,17 @@ public class PhoneService {
         List<CustomerDTO> customerDTOS = customerMapper.toDto(customerRepository.findAll());
         return customerDTOS == null ? Optional.empty() : Optional.of(customerDTOS);
     }
+
+    /**
+     * Get all the phones.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<PhoneDTO> findAll(Pageable pageable) {
+        log.debug("Request to get all Phones");
+        return phoneRepository.findAll(pageable).map(phoneMapper::toDto);
+    }
+
 }

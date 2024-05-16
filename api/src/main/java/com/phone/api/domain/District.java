@@ -39,7 +39,7 @@ public class District implements Serializable {
     @Column(name = "code", nullable = false)
     private Integer code;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "district", cascade = CascadeType.ALL)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = {"district"}, allowSetters = true)
     private Set<Customer> customers = new HashSet<>();

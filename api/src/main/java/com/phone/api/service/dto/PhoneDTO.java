@@ -15,7 +15,7 @@ public class PhoneDTO implements Serializable {
     private Long id;
     @NotBlank(message = "{error.validation.empty.phone}")
     @NotNull(message = "{error.validation.null.phone}")
-    @Size(min = 11, max = 11, message = "{error.validation.invalid.size.phone}")
+    @Size(min = 16, max = 16, message = "{error.validation.invalid.size.phone}")
     private String phoneNumber;
 
     private CustomerDTO customerDTO;
@@ -62,7 +62,7 @@ public class PhoneDTO implements Serializable {
         return "PhoneDTO{" +
             "id=" + id +
             ", phoneNumber='" + phoneNumber + '\'' +
-            ", customer=" + customerDTO +
+            ", customerDTO=" + customerDTO +
             '}';
     }
 }

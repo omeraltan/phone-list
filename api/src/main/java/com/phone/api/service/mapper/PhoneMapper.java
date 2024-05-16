@@ -9,10 +9,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Phone} and its DTO {@link PhoneDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CustomerMapper.class})
 public interface PhoneMapper extends EntityMapper<PhoneDTO, Phone> {
 
-    @Mapping(target = "customerDTO", source = "customer", qualifiedByName = "customerId")
+    @Mapping(target = "customerDTO", source = "customer")
     PhoneDTO toDto(Phone s);
 
     @Named("customerId")
@@ -22,4 +22,5 @@ public interface PhoneMapper extends EntityMapper<PhoneDTO, Phone> {
 
     @Mapping(target = "customer", source = "customerDTO")
     Phone toEntity(PhoneDTO phoneDTO);
+
 }
