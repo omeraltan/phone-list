@@ -7,7 +7,6 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { ProgressBar } from 'primereact/progressbar';
 import { InputMask } from 'primereact/inputmask';
 import { FloatLabel } from 'primereact/floatlabel';
 import { Dropdown } from 'primereact/dropdown';
@@ -30,7 +29,7 @@ const CustomerPhoneList = (props) => {
         .get('http://localhost:8080/api/phone/phones')
         .then(response => {
           setData(response.data);
-          console.log('Table:', response.data);
+          console.log('PhoneCustomerTable:', response.data);
         })
         .catch(error => {
           console.log(error);
@@ -84,16 +83,6 @@ const CustomerPhoneList = (props) => {
     );
   };
 
-
-
-  
-
-
-
-  const activityBodyTemplate = rowData => {
-    return <ProgressBar value={rowData.activity} showValue={false} style={{ height: '6px' }}></ProgressBar>;
-  };
-
   const paginatorLeft = <Button style={{ fontSize: '10px' }} type="button" icon="pi pi-refresh" text />;
   const paginatorRight = <Button type="button" icon="pi pi-download" text />;
   const header = renderHeader();
@@ -115,8 +104,13 @@ const CustomerPhoneList = (props) => {
         console.log(error);
       });
     setLogic(!logic);
-    //window.location.reload();
+    setSelectedCustomer(null);
+    setNumber(null);
   };
+
+  const actionBodyTemplate = (rowData) => {
+    return <Button type='button' icon="pi pi-trash" size='small' severity='danger' outlined aria-label="Cancel" rounded />
+  }
 
   return (
     <div className="card">
@@ -175,17 +169,11 @@ const CustomerPhoneList = (props) => {
           <Column header="Index" body={(data, options) => options.rowIndex + 1} style={{ fontSize: '12px', textAlign: 'center' }} />
           <Column field="customerDTO.firstName" header="First Name" style={{ minWidth: '12rem' }} />
           <Column field="customerDTO.lastName" header="Last Name" style={{ minWidth: '12rem' }} />
+          <Column field='phoneNumber' header="phone" style={{ minWidth: '12rem' }} />
           <Column field="customerDTO.email" header="E-mail" style={{ minWidth: '14rem' }}  />
-          <Column header="City" style={{ minWidth: '10rem' }}  />
-          <Column header="District" style={{ minWidth: '10rem' }} />
-          <Column field="status" header="Address" style={{ minWidth: '12rem' }} />
-          <Column
-            field="activity"
-            header="İşlem"
-            showFilterMatchModes={false}
-            style={{ minWidth: '8rem', textAlign: 'center' }}
-            body={activityBodyTemplate}
-          />
+          <Column field='customerDTO.address' header="Address" style={{ minWidth: '14rem' }}  />
+          <Column field="customerDTO.districtDTO.name"  header="City" style={{ minWidth: '10rem' }}  />
+          <Column header="Process" body={actionBodyTemplate}/>
         </DataTable>
       </div>
     </div>
