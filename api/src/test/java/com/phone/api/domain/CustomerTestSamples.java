@@ -4,18 +4,16 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class DistrictTestSamples {
-
+public class CustomerTestSamples {
     private static final Random random = new Random();
     private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
     private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
 
-    public static District getDistrictSample1() {
-        return new District(1L, "name1", "Description1", 1);
+    public static Customer getCustomerSample1(){
+        return new Customer(1L, "name1", "lastname1", "name1@gmail.com", new District());
     }
 
-    public static District getDistrictSample2() {
-        return new District(2L, "name2", "Description2", 1);
+    public static Customer getCustomerSample2(){
+        return new Customer(2L, "name2", "lastname2", "name2@gmail.com", new District());
     }
-
 }

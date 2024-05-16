@@ -7,6 +7,7 @@ import com.phone.api.domain.District;
 import com.phone.api.repository.DistrictRepository;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.service.mapper.DistrictMapper;
+import com.phone.api.service.mapper.DistrictMapperImpl;
 import jdk.jfr.Description;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class DistrictServiceTests {
+public class DistrictServiceTest {
 
     @Before
     public void setUp(){
@@ -38,32 +39,7 @@ public class DistrictServiceTests {
     private DistrictService districtService;
 
     @Spy
-    private DistrictMapper districtMapperSpy = new DistrictMapper() {
-        @Override
-        public District toEntity(DistrictDTO dto) {
-            return null;
-        }
-
-        @Override
-        public DistrictDTO toDto(District entity) {
-            return null;
-        }
-
-        @Override
-        public List<District> toEntity(List<DistrictDTO> dtoList) {
-            return List.of();
-        }
-
-        @Override
-        public List<DistrictDTO> toDto(List<District> entityList) {
-            return List.of();
-        }
-
-        @Override
-        public void partialUpdate(District entity, DistrictDTO dto) {
-
-        }
-    };
+    private DistrictMapper districtMapperSpy = new DistrictMapperImpl();
 
     @Test
     @Description("Should create a district in the database")

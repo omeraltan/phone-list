@@ -36,7 +36,7 @@ import java.util.Optional;
 @Tag(name = "Phone", description = "Operations related to phones")
 public class PhoneResource {
 
-    private final Logger log = LoggerFactory.getLogger(CustomerResource.class);
+    private final Logger log = LoggerFactory.getLogger(PhoneResource.class);
     private static final String ENTITY_NAME = "phone";
     private final PhoneService phoneService;
 
@@ -50,14 +50,13 @@ public class PhoneResource {
     /**
      * {@code GET  /customers} : get all the customers.
      *
-     * @param -
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of customers in body.
      */
     @GetMapping("/customers")
     @Operation(
-        description = "Get All Customers Service",
+        description = "Retrieves the list of all customers for use in phone dropdown menus.",
         responses = {
-            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer/Customers", content = @Content(schema = @Schema(implementation = CustomerDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
             @ApiResponse(responseCode = "400", ref = "badRequest"),
             @ApiResponse(responseCode = "500", ref = "internalServerError")
         },
@@ -82,7 +81,7 @@ public class PhoneResource {
     @Operation(
         description = "Get All Phones Service",
         responses = {
-            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Customer/Customers", content = @Content(schema = @Schema(implementation = PhoneDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PhoneDTO.class))),
             @ApiResponse(responseCode = "400", ref = "badRequest"),
             @ApiResponse(responseCode = "500", ref = "internalServerError")
         },
@@ -107,7 +106,7 @@ public class PhoneResource {
     @Operation(
         description = "Create Phone Service",
         responses = {
-            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Phone", content = @Content(schema = @Schema(implementation = PhoneDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PhoneDTO.class))),
             @ApiResponse(responseCode = "400", ref = "badRequest"),
             @ApiResponse(responseCode = "500", ref = "internalServerError")
         },
