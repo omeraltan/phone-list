@@ -46,7 +46,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/district")
-@CrossOrigin(maxAge = 3600)
 @Tag(name = "District", description = "Operations related to districts")
 public class DistrictResource {
 

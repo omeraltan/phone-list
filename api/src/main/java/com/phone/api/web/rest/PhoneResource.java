@@ -32,7 +32,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/phone")
-@CrossOrigin(maxAge = 3600)
 @Tag(name = "Phone", description = "Operations related to phones")
 public class PhoneResource {
 
