@@ -40,7 +40,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/customer")
-@CrossOrigin(maxAge = 3600)
 @Tag(name = "Customer", description = "Operations related to customers")
 public class CustomerResource {
 

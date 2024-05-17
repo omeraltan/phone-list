@@ -211,6 +211,8 @@ export const District = () => {
             <Column field="code" header="Code" style={{ minWidth: '12rem' }} />
             <Column header="process" body={actionBodyTemplate}/>
           </DataTable>
+
+          
         </div>
       )}
     </div>
