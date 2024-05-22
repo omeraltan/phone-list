@@ -143,10 +143,16 @@ export const Customer = () => {
 
   const renderHeader = () => {
     return (
-      <div className="flex flex-wrap align-items-center justify-content-between gap-2">
+      <div className="header-container">
         <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" style={{ fontSize: '12px' }} />
+        <Button label="Reset" icon="pi pi-refresh" className="reset-button" iconPos="right" onClick={resetFilter} />
       </div>
     );
+  };
+
+  const resetFilter = () => {
+    setFilters({ global: { value: null, matchMode: 'contains' } });
+    setGlobalFilterValue('');
   };
 
   const paginatorLeft = <Button style={{ fontSize: '10px' }} type="button" icon="pi pi-refresh" text />;
