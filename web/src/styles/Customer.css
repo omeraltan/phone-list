@@ -1,0 +1,35 @@
+/* Customer.css */
+
+.customer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.customer-form {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.input-container .p-inputtext {
+    width: calc(50% - 10px);
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.customer-table {
+    width: 100%;
+}

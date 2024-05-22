@@ -3,7 +3,7 @@ import { TabView, TabPanel } from 'primereact/tabview';
 import 'primereact/resources/themes/lara-light-cyan/theme.css';
 import 'primeicons/primeicons.css';
 import { District } from './components/District';
-import Customer from './components/Customer';
+import { Customer } from './components/Customer';
 import CustomerPhoneList from './components/CustomerPhoneList';
 
 

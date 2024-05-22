@@ -1,0 +1,27 @@
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8080/api/district';
+
+class DistrictService {
+    getAllDistricts() {
+        return axios.get(API_URL);
+    }
+
+    getDistrictByCode(code) {
+        return axios.get(`${API_URL}/code/${code}`);
+    }
+
+    saveCity(city) {
+        return axios.post(API_URL, city);
+    }
+
+    saveDistrict(district) {
+        return axios.post(API_URL, district);
+    }
+
+    deleteDistrict(id) {
+        return axios.delete(`${API_URL}/${id}`);
+    }
+}
+
+export default new DistrictService();

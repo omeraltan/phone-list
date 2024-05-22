@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import 'primereact/resources/themes/lara-light-cyan/theme.css';
-import 'primeicons/primeicons.css';
-import { FloatLabel } from 'primereact/floatlabel';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Dropdown } from 'primereact/dropdown';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Toast } from 'primereact/toast';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { FloatLabel } from 'primereact/floatlabel';
+import { InputTextarea } from 'primereact/inputtextarea';
+import CustomerService from '../services/CustomerService';
+import '../styles/Customer.css';
 
-const Customer = () => {
+export const Customer = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -18,89 +18,118 @@ const Customer = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [cities, setCities] = useState([]);
-  const [district, setDistrict] = useState([]);
-  const [filters, setFilters] = useState(null);
-  const [data, setData] = useState(null);
+  const [districts, setDistricts] = useState([]);
+  const [filters, setFilters] = useState({ global: { value: null, matchMode: 'contains' } });
+  const [data, setData] = useState([]);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [logic, setLogic] = useState(false);
+  const toast = useRef(null);
 
-  useEffect(() => {
-    axios
-    .get('http://localhost:8080/api/customer')
-    .then(response => {
-      setData(response.data);
-      console.log("Table:", response.data );
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }, [logic])
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:8080/api/customer/cities/-1')
+  const fetchCustomers = useCallback(() => {
+    CustomerService.getCustomers()
       .then(response => {
-        setCities(response.data);
-        console.log('Citites : ', response?.data);
+        setData(response.data);
+        console.log('Table:', response.data);
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
+        showErrorToast('Error', 'Failed to fetch customers.');
       });
+  }, []);
 
-    if (selectedCity !== null && selectedCity !== undefined) {
-      axios
-        .get(`http://localhost:8080/api/customer/districts/${selectedCity?.id}`)
-        .then(response => {
-          setDistrict(response.data);
-          console.log('Districts : ', response?.data);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+  const fetchCities = useCallback(() => {
+    CustomerService.getCities()
+      .then(response => {
+        setCities(response.data);
+        console.log('Cities:', response.data);
+      })
+      .catch(error => {
+        console.error(error);
+        showErrorToast('Error', 'Failed to fetch cities.');
+      });
+  }, []);
+
+  const fetchDistricts = useCallback(cityId => {
+    CustomerService.getDistricts(cityId)
+      .then(response => {
+        setDistricts(response.data);
+        console.log('Districts:', response.data);
+      })
+      .catch(error => {
+        console.error(error);
+        showErrorToast('Error', 'Failed to fetch districts.');
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
+
+  useEffect(() => {
+    fetchCities();
+  }, [fetchCities]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      fetchDistricts(selectedCity.id);
     }
-  }, [selectedCity]);
+  }, [fetchDistricts, selectedCity]);
 
   const saveCustomer = () => {
-    const values = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
+    const customer = {
+      firstName,
+      lastName,
+      email,
       districtDTO: {
         id: selectedDistrict?.id,
       },
-
-      address: address,
+      address,
     };
-    axios
-      .post('http://localhost:8080/api/customer', values)
+
+    CustomerService.saveCustomer(customer)
       .then(response => {
-        console.log('Yeni Customer Veri: ', response.data);
+        console.log('New Customer Data:', response.data);
+        setLogic(!logic);
+        clearForm();
+        showSuccessToast('Success', 'Customer saved successfully.');
+        fetchCustomers(); // Yeni müşteri ekledikten sonra verileri yenile
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
+        showErrorToast('Error', 'Failed to save customer.');
       });
+  };
+
+  const deleteCustomer = rowData => {
+    CustomerService.deleteCustomer(rowData.id)
+      .then(response => {
+        console.log('Delete Customer:', response.data);
+        setLogic(!logic);
+        showSuccessToast('Success', 'Customer deleted successfully.');
+        fetchCustomers(); // Müşteri silindikten sonra verileri yenile
+      })
+      .catch(error => {
+        console.error(error);
+        showErrorToast('Error', 'Failed to delete customer.');
+      });
+  };
+
+  const showSuccessToast = (summary, detail) => {
+    toast.current.show({ severity: 'success', summary, detail, life: 3000 });
+  };
+
+  const showErrorToast = (summary, detail) => {
+    toast.current.show({ severity: 'error', summary, detail, life: 3000 });
+  };
+
+  const clearForm = () => {
     setFirstName('');
     setLastName('');
     setEmail('');
     setAddress('');
     setSelectedCity(null);
     setSelectedDistrict(null);
-    setLogic(!logic);
-
-    //window.location.reload();
   };
-
-  const deleteCustomer = (rowData) => {
-    axios
-    .delete(`http://localhost:8080/api/customer/${rowData.id}`)
-    .then(response => {
-      console.log('Delete Customer: ', response.data );
-    })
-    .catch(error => {
-      console.log(error);
-    });
-    setLogic(!logic);
-  }
 
   const onGlobalFilterChange = e => {
     const value = e.target.value;
@@ -125,12 +154,25 @@ const Customer = () => {
 
   const header = renderHeader();
 
-  const actionBodyTemplate = (rowData) => {
-    return <Button type='button' icon="pi pi-trash" size='small' severity='danger' outlined aria-label="Cancel" rounded onClick={() => deleteCustomer(rowData)}/>
-  }
+  const actionBodyTemplate = rowData => {
+    return (
+      <Button
+        type="button"
+        icon="pi pi-trash"
+        size="small"
+        severity="danger"
+        outlined
+        aria-label="Cancel"
+        rounded
+        onClick={() => deleteCustomer(rowData)}
+      />
+    );
+  };
 
   return (
     <div className="formgrid grid">
+      <Toast ref={toast} />
+
       <br />
       <FloatLabel>
         <InputText id="firstname" value={firstName} onChange={e => setFirstName(e.target.value)} />
@@ -162,48 +204,52 @@ const Customer = () => {
       <br />
       <FloatLabel>
         <Dropdown
-          inputId="dd-city"
+          inputId="dd-district"
           value={selectedDistrict}
           onChange={e => setSelectedDistrict(e.value)}
-          options={district}
+          options={districts}
           optionLabel="name"
           className="w-full"
           style={{ width: 270 }}
         />
-        <label htmlFor="dd-city">Select a District</label>
+        <label htmlFor="dd-district">Select a District</label>
       </FloatLabel>
       <br />
       <FloatLabel>
-        <InputTextarea id="address" value={address} onChange={e => setAddress(e.target.value)} rows={5} cols={30} />
+        <InputTextarea id="address" value={address} onChange={e => setAddress(e.target.value)} rows={3} />
         <label htmlFor="address">Address</label>
       </FloatLabel>
       <br />
       <Button label="Save Customer" icon="pi pi-save" style={{ width: 200 }} onClick={saveCustomer} />
       <br />
       <br />
-      <DataTable value={data}
-        paginator showGridlines rows={25}
+      <DataTable
+        value={data}
+        paginator
+        showGridlines
+        rows={25}
         rowsPerPageOptions={[5, 10, 25, 50]}
         tableStyle={{ minWidth: '50rem' }}
         paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown"
-        currentPageReportTemplate="{first} to {last} of {totalRecords}" paginatorClassName="" paginatorLeft={paginatorLeft}
+        currentPageReportTemplate="{first} to {last} of {totalRecords}"
+        paginatorClassName=""
+        paginatorLeft={paginatorLeft}
         paginatorRight={paginatorRight}
-        //loading={loading}
-        dataKey="id" filters={filters}
-        globalFilterFields={['name', 'country.name', 'representative.name', 'balance', 'status']}
+        dataKey="id"
+        filters={filters || {}} // filters değeri null ise boş bir nesne ataması yapılıyor
+        globalFilterFields={['firstName', 'lastName', 'email', 'address', 'districtDTO.name']}
         header={header}
         style={{ fontSize: '12px' }}
-        emptyMessage="No customers found." >
+        emptyMessage="No customers found."
+      >
         <Column header="Sıra" body={(data, options) => options.rowIndex + 1} style={{ fontSize: '12px', textAlign: 'center' }} />
         <Column field="firstName" header="First Name" style={{ minWidth: '12rem' }} />
         <Column field="lastName" header="Last Name" style={{ minWidth: '12rem' }} />
         <Column field="email" header="Email" style={{ minWidth: '12rem' }} />
         <Column field="address" header="Address" style={{ minWidth: '12rem' }} />
         <Column field="districtDTO.name" header="District" style={{ minWidth: '12rem' }} />
-        <Column header="Process" body={actionBodyTemplate}/>
+        <Column header="Process" body={actionBodyTemplate} />
       </DataTable>
     </div>
   );
 };
-
-export default Customer;
