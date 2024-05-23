@@ -42,26 +42,12 @@ public class PhoneService {
 
     /**
      * Get all the phones.
-     *
      * @param customerId the count information.
      * @return the count of phone.
      */
     public Integer getCountPhones(Long customerId){
         log.debug("Request getCountPhones CustomerId: {}", customerId);
         return phoneRepository.findCountByCustomerPhones(customerId);
-    }
-
-    /**
-     * Save a phone number
-     *
-     * @param phoneDTO the entity to save
-     * @return the persisted entity.
-     */
-    public PhoneDTO save(PhoneDTO phoneDTO) {
-        log.debug("Request to save Phone : {}", phoneDTO);
-        Phone phone = phoneMapper.toEntity(phoneDTO);
-        phone = phoneRepository.save(phone);
-        return phoneMapper.toDto(phone);
     }
 
     public Optional<List<CustomerDTO>> findAll() {
@@ -80,6 +66,19 @@ public class PhoneService {
     public Page<PhoneDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Phones");
         return phoneRepository.findAll(pageable).map(phoneMapper::toDto);
+    }
+
+    /**
+     * Save a phone number
+     *
+     * @param phoneDTO the entity to save
+     * @return the persisted entity.
+     */
+    public PhoneDTO save(PhoneDTO phoneDTO) {
+        log.debug("Request to save Phone : {}", phoneDTO);
+        Phone phone = phoneMapper.toEntity(phoneDTO);
+        phone = phoneRepository.save(phone);
+        return phoneMapper.toDto(phone);
     }
 
     /**

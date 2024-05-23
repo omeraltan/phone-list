@@ -84,7 +84,6 @@ public class CustomerService {
 
     /**
      * Delete the customer by id.
-     *
      * @param id the id of the entity.
      */
     public void delete(Long id) {
