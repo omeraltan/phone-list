@@ -101,17 +101,25 @@ export const Customer = () => {
   };
 
   const deleteCustomer = rowData => {
-    CustomerService.deleteCustomer(rowData.id)
-      .then(response => {
-        console.log('Delete Customer:', response.data);
-        setLogic(!logic);
-        showSuccessToast('Success', 'Customer deleted successfully.');
-        fetchCustomers(); // Müşteri silindikten sonra verileri yenile
-      })
-      .catch(error => {
-        console.error(error);
-        showErrorToast('Error', 'Failed to delete customer.');
-      });
+    CustomerService.getCustomerCount(rowData.id).then(response => {
+      console.log('Count : ', response.data);
+      if (response.data > 0) {
+        showErrorToast('Error', 'Failed to delete customer because it was used by phones');
+      } else {
+        CustomerService.deleteCustomer(rowData.id)
+          .then(response => {
+            console.log('Delete Customer:', response.data);
+            setLogic(!logic);
+            showSuccessToast('Success', 'Customer deleted successfully.');
+            fetchCustomers(); // Müşteri silindikten sonra verileri yenile
+          })
+          .catch(error => {
+            console.error(error);
+            showErrorToast('Error', 'Failed to delete customer.');
+          });
+      }
+    });
+
   };
 
   const showSuccessToast = (summary, detail) => {

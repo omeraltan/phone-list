@@ -15,6 +15,10 @@ class CustomerService {
         return axios.get(`${API_URL}/districts/${cityId}`);
     }
 
+    getCustomerCount(customerId){
+        return axios.get(`${API_URL}/amount/${customerId}`);
+    }
+
     saveCustomer(customer) {
         return axios.post(API_URL, customer);
     }
@@ -23,5 +27,5 @@ class CustomerService {
         return axios.delete(`${API_URL}/${customerId}`);
     }
 }
-
-export default new CustomerService();
+const customerServiceInstance = new CustomerService();
+export default customerServiceInstance;
