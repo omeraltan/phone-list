@@ -123,15 +123,27 @@ export const District = () => {
   };
 
   const deleteDistrict = id => {
-    DistrictService.deleteDistrict(id)
-      .then(() => {
-        setDistricts(districts.filter(district => district.id !== id));
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'District Deleted', life: 3000 });
-      })
-      .catch(error => {
-        console.log(error);
-        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to Delete District', life: 3000 });
-      });
+    DistrictService.getDistrictCount(id).then(response => {
+      console.log('Count : ', response.data);
+      if (response.data > 0) {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to Delete District Because ıt Was Used By Customers',
+          life: 3000,
+        });
+      } else {
+        DistrictService.deleteDistrict(id)
+          .then(() => {
+            setDistricts(districts.filter(district => district.id !== id));
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'District Deleted', life: 3000 });
+          })
+          .catch(error => {
+            console.log(error);
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to Delete District', life: 3000 });
+          });
+      }
+    });
   };
 
   const actionBodyTemplate = rowData => {

@@ -11,6 +11,10 @@ class DistrictService {
         return axios.get(`${API_URL}/code/${code}`);
     }
 
+    getDistrictCount(districtId){
+        return axios.get(`${API_URL}/amount/${districtId}`);
+    }
+
     saveCity(city) {
         return axios.post(API_URL, city);
     }
