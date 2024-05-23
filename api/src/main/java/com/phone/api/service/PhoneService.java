@@ -41,6 +41,17 @@ public class PhoneService {
     }
 
     /**
+     * Get all the phones.
+     *
+     * @param customerId the count information.
+     * @return the count of phone.
+     */
+    public Integer getCountPhones(Long customerId){
+        log.debug("Request getCountPhones CustomerId: {}", customerId);
+        return phoneRepository.findCountByCustomerPhones(customerId);
+    }
+
+    /**
      * Save a phone number
      *
      * @param phoneDTO the entity to save
@@ -71,4 +82,13 @@ public class PhoneService {
         return phoneRepository.findAll(pageable).map(phoneMapper::toDto);
     }
 
+    /**
+     * Delete the phone by id.
+     *
+     * @param id the id of the entity.
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete Phone : {}", id);
+        phoneRepository.deleteById(id);
+    }
 }

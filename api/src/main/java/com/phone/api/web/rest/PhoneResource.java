@@ -2,6 +2,7 @@ package com.phone.api.web.rest;
 
 import com.phone.api.exception.BadRequestException;
 import com.phone.api.exception.ResourceNotFoundException;
+import com.phone.api.repository.PhoneRepository;
 import com.phone.api.service.PhoneService;
 import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.PhoneDTO;
@@ -38,12 +39,14 @@ public class PhoneResource {
     private final Logger log = LoggerFactory.getLogger(PhoneResource.class);
     private static final String ENTITY_NAME = "phone";
     private final PhoneService phoneService;
+    private final PhoneRepository phoneRepository;
 
     @Value("phoneListApp")
     private String applicationName;
 
-    public PhoneResource(PhoneService phoneService) {
+    public PhoneResource(PhoneService phoneService, PhoneRepository phoneRepository) {
         this.phoneService = phoneService;
+        this.phoneRepository = phoneRepository;
     }
 
     /**
@@ -120,5 +123,30 @@ public class PhoneResource {
         return ResponseEntity.created(new URI("/api/phone/" + phoneDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, phoneDTO.getId().toString()))
             .body(phoneDTO);
+    }
+
+    /**
+     * {@code DELETE  /phone/:id} : delete the "id" phone.
+     *
+     * @param id the id of the phoneDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/{id}")
+    @Operation(
+        description = "Delete Phone Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Phone", content = @Content(schema = @Schema(implementation = PhoneDTO.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Delete A Phone"
+    )
+    public ResponseEntity<Void> deletePhone(@PathVariable(value = "id", required = false) final Long id) {
+        log.debug("REST request to delete phone : {}", id);
+        if (!phoneRepository.existsById(id)){
+            throw new ResourceNotFoundException("Phone with id " + id + " not found");
+        }
+        phoneService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
