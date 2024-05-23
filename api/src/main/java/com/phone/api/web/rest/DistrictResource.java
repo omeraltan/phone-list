@@ -140,6 +140,27 @@ public class DistrictResource {
     }
 
     /**
+     * {@code GET /amount} : get all count the customer with district_id information.
+     *
+     * @param id the district information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count of district in body.
+     */
+    @GetMapping("/amount/{id}")
+    @Operation(
+        description = "Get Count District's Customers Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Count", content = @Content(schema = @Schema(implementation = Integer.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get Count Customers For District"
+    )
+    public ResponseEntity<Integer> getCountDistricts(@PathVariable("id") Long id){
+        log.debug("REST request to get amount of Districts from Customer : {}", id);
+        return ResponseEntity.status(HttpStatus.OK).body(districtService.getCountDistricts(id));
+    }
+
+    /**
      * {@code PUT  /district/:id} : Updates an existing district.
      *
      * @param id the id of the districtDTO to save.

@@ -25,4 +25,11 @@ public interface DistrictRepository extends JpaRepository<District, Long> {
     @Query("SELECT a FROM District a WHERE a.code = :code")
     List<District> findDistrictsByCodeIsGreaterThanZero(@Param("code") int code);
 
+    /**
+     * @param id We use the ID value to find the amount of districts in the customer table.
+     * @return It will return information on how many times the district used in the Customer table has been used.
+     */
+    @Query(value = "SELECT count(a) FROM Customer a WHERE a.district.id = :id")
+    Integer findCountByDistrictCustomers(@Param("id") Long id);
+
 }

@@ -1,12 +1,8 @@
 package com.phone.api.service;
 
-import com.phone.api.domain.Customer;
 import com.phone.api.domain.District;
-import com.phone.api.repository.CustomerRepository;
 import com.phone.api.repository.DistrictRepository;
-import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.DistrictDTO;
-import com.phone.api.service.mapper.CustomerMapper;
 import com.phone.api.service.mapper.DistrictMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +25,21 @@ public class DistrictService {
 
     private final DistrictRepository districtRepository;
     private final DistrictMapper districtMapper;
-    private final CustomerRepository customerRepository;
-    private final CustomerMapper customerMapper;
 
-    public DistrictService(DistrictRepository districtRepository, DistrictMapper districtMapper, CustomerRepository customerRepository, CustomerMapper customerMapper) {
+
+    public DistrictService(DistrictRepository districtRepository, DistrictMapper districtMapper) {
         this.districtRepository = districtRepository;
         this.districtMapper = districtMapper;
-        this.customerRepository = customerRepository;
-        this.customerMapper = customerMapper;
+    }
+
+    /**
+     * Get all the phones.
+     * @param districtId the count information.
+     * @return the count of district.
+     */
+    public Integer getCountDistricts(Long districtId){
+        log.debug("Request getCountDistricts districtId : {}", districtId);
+        return districtRepository.findCountByDistrictCustomers(districtId);
     }
 
     /**
@@ -63,7 +66,6 @@ public class DistrictService {
         List<District> district = districtRepository.findDistrictsByCodeIsLessThan(code);
         List<DistrictDTO> districtDTO = districtMapper.toDto(district);
         return districtDTO == null ? Optional.empty() : Optional.of(districtDTO);
-        //return districtRepository.findDistrictsByCodeIsLessThan(code).map(districtMapper::toDto);
     }
 
     /**
