@@ -4,8 +4,10 @@ import com.phone.api.domain.Customer;
 import com.phone.api.exception.BadRequestException;
 import com.phone.api.exception.ResourceNotFoundException;
 import com.phone.api.repository.CustomerRepository;
+import com.phone.api.repository.PhoneRepository;
 import com.phone.api.service.CustomerService;
 import com.phone.api.service.DistrictService;
+import com.phone.api.service.PhoneService;
 import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.utilty.HeaderUtil;
@@ -45,6 +47,8 @@ public class CustomerResource {
 
     private final Logger log = LoggerFactory.getLogger(CustomerResource.class);
     private static final String ENTITY_NAME = "Customer";
+    private final PhoneService phoneService;
+    private final PhoneRepository phoneRepository;
 
     @Value("phoneListApp")
     private String applicationName;
@@ -54,10 +58,12 @@ public class CustomerResource {
     private final CustomerRepository customerRepository;
 
     @Autowired
-    public CustomerResource(CustomerService customerService, DistrictService districtService, CustomerRepository customerRepository) {
+    public CustomerResource(CustomerService customerService, DistrictService districtService, CustomerRepository customerRepository, PhoneService phoneService, PhoneRepository phoneRepository) {
         this.customerService = customerService;
         this.districtService = districtService;
         this.customerRepository = customerRepository;
+        this.phoneService = phoneService;
+        this.phoneRepository = phoneRepository;
     }
 
     /**
@@ -155,6 +161,27 @@ public class CustomerResource {
             throw new ResourceNotFoundException("Not Found District / Districts with code = " + code);
         }
         return ResponseEntity.status(HttpStatus.OK).body(districtDTOS.get());
+    }
+
+    /**
+     * {@code GET /amount} : get all count the phone with customer_id information.
+     *
+     * @param id the customer information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count of phone in body.
+     */
+    @GetMapping("/amount/{id}")
+    @Operation(
+        description = "Get Count Customer's Phones Service",
+        responses = {
+            @ApiResponse(responseCode = "200", ref = "successfulResponse", description = "Found the Count", content = @Content(schema = @Schema(implementation = Integer.class))),
+            @ApiResponse(responseCode = "400", ref = "badRequest"),
+            @ApiResponse(responseCode = "500", ref = "internalServerError")
+        },
+        summary = "Get Count Phones For Customer"
+    )
+    public ResponseEntity<Integer> getCountPhones(@PathVariable("id") Long id){
+        log.debug("REST request to get amount of Phones : {}", id);
+        return ResponseEntity.status(HttpStatus.OK).body(phoneService.getCountPhones(id));
     }
 
     /**

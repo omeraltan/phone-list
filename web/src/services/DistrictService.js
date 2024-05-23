@@ -24,4 +24,5 @@ class DistrictService {
     }
 }
 
-export default new DistrictService();
+const districtServiceInstance = new DistrictService();
+export default districtServiceInstance;
