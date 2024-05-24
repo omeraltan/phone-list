@@ -83,6 +83,17 @@ public class DistrictService {
     }
 
     /**
+     * Get all the districts amount.
+     * @param code the count information.
+     * @return the count of districts.
+     */
+    @Transactional
+    public Integer getCountDistrictsOfCity(Integer code){
+        log.debug("Request to get District By City : {}", code);
+        return districtRepository.FindTheNumberOfDistrictsUsingThisCity(code);
+    }
+
+    /**
      * Get all the districts.
      *
      * @param pageable the pagination information.

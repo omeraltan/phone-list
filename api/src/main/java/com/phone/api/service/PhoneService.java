@@ -45,6 +45,7 @@ public class PhoneService {
      * @param customerId the count information.
      * @return the count of phone.
      */
+    @Transactional(readOnly = true)
     public Integer getCountPhones(Long customerId){
         log.debug("Request getCountPhones CustomerId: {}", customerId);
         return phoneRepository.findCountByCustomerPhones(customerId);
