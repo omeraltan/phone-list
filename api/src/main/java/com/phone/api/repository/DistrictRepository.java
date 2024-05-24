@@ -1,6 +1,8 @@
 package com.phone.api.repository;
 
 import com.phone.api.domain.District;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,7 +35,7 @@ public interface DistrictRepository extends JpaRepository<District, Long> {
     Integer findCountByDistrictCustomers(@Param("id") Long id);
 
     /**
-     * @param id We check whether the provinces in the District table are used by cities or not with their ID values.
+     * @param code We check whether the provinces in the District table are used by cities or not with their ID values.
      * @return We return the information on how many times the relevant province in the District table is used.
      */
     @Query(value = "SELECT COUNT (*) FROM DISTRICT WHERE CODE = :code", nativeQuery = true)
