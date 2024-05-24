@@ -20,6 +20,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +88,7 @@ public class DistrictServiceTest {
     @Description("Should update any district data")
     public void DistrictService_UpdateDistrict_ReturnDistrictDTO(){
         long districtId = 1L;
-        DistrictDTO districtDTO = new DistrictDTO("Ankara", "Ankara Description", -1);
+        DistrictDTO districtDTO = new DistrictDTO(1L,"Ankara", "Ankara Description", -1);
         District district = new District();
         BeanUtils.copyProperties(districtDTO,district);
 
@@ -110,6 +112,42 @@ public class DistrictServiceTest {
         doNothing().when(districtRepository).delete(district);
         districtService.delete(districtId);
         assertAll(() -> districtService.delete(districtId));
+    }
+
+    @Test
+    @Description("Should give the number of customers using the district")
+    public void DistrictService_GetCountDistricts(){
+        when(districtRepository.findCountByDistrictCustomers(any(Long.class))).thenReturn(5);
+        int count = districtService.getCountDistricts(1L);
+        assertEquals(5, count);
+    }
+
+    @Test
+    @Description("Should give the amount of districts using the city")
+    public void DistrictService_Get_Count_Districts_Of_City(){
+        int cityCode = 123;
+        int expectedCount = 5;
+        when(districtRepository.FindTheNumberOfDistrictsUsingThisCity(cityCode)).thenReturn(expectedCount);
+        int result = districtService.getCountDistrictsOfCity(cityCode);
+        assertEquals(expectedCount, result);
+    }
+
+    @Test
+    @Description("Should find the districts greater than zero with the code parameter.")
+    public void DistrictService_Get_DistrictsByCode_WhenIsGreaterThanZero_ReturnDistrictDTO(){
+        int code = 1;
+        List<District> districts = new ArrayList<>();
+        District district1 = new District();
+        district1.setId(1L);
+        districts.add(district1);
+        District district2 = new District();
+        district2.setId(2L);
+        districts.add(district2);
+        when(districtRepository.findDistrictsByCodeIsGreaterThanZero(code)).thenReturn(districts);
+        when(districtMapperSpy.toDto(districts)).thenReturn(Arrays.asList(new DistrictDTO(), new DistrictDTO()));
+        Optional<List<DistrictDTO>> result = districtService.findDistrictsByCodeIsGreaterThanZero(code);
+        assertEquals(true, result.isPresent());
+        assertEquals(2, result.get().size());
     }
 
     @After
