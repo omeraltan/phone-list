@@ -10,7 +10,7 @@ public class CustomerTestSamples {
     private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
 
     public static Customer getCustomerSample1(){
-        return new Customer(1L, "name1", "lastname1", "name1@gmail.com", new District());
+        return new Customer(1L, "name1".toUpperCase(), "lastname1".toUpperCase(), "name1@gmail.com".toUpperCase(), "address address1".toUpperCase(), new District(1L));
     }
 
     public static Customer getCustomerSample2(){

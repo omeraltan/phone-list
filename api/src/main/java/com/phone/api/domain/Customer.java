@@ -59,6 +59,25 @@ public class Customer implements Serializable {
         this.district = district;
     }
 
+    public Customer(Long id, String firstName, String lastName, String email, String address, District district) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.district = district;
+    }
+
+    public Customer(Long id, String firstName, String lastName, String email, String address, District district, Set<Phone> phones) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.district = district;
+        this.phones = phones;
+    }
+
     public Long getId() {
         return id;
     }
