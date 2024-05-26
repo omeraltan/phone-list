@@ -20,4 +20,8 @@ public class PhoneTestSamples {
         customer.setId(intCount.longValue());
         return new Phone(2L, "(0539)-763-67-88", customer);
     }
+
+    public static Phone getPhoneSample3(){
+        return new Phone(3L, "(0539)-763-67-88");
+    }
 }

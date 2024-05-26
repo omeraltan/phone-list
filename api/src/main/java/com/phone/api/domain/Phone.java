@@ -30,6 +30,11 @@ public class Phone implements Serializable {
     public Phone() {
     }
 
+    public Phone(Long id, String phoneNumber) {
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Phone(Long id, String phoneNumber, Customer customer) {
         this.id = id;
         this.phoneNumber = phoneNumber;
