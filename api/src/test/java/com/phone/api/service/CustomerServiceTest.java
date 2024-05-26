@@ -7,12 +7,13 @@ import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.service.mapper.CustomerMapper;
 import com.phone.api.service.mapper.CustomerMapperImpl;
+import jdk.jfr.Description;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,120 +31,94 @@ import static org.mockito.Mockito.*;
 public class CustomerServiceTest {
 
     @Mock
-    private CustomerMapper customerMapper;
+    private CustomerRepository customerRepository;
 
     @Mock
-    private CustomerRepository customerRepository;
+    private CustomerMapper customerMapper;
 
     @InjectMocks
     private CustomerService customerService;
 
     @Spy
-    CustomerMapper customerMapperSpy = new CustomerMapperImpl();
+    private CustomerMapper customerMapperSpy = new CustomerMapperImpl();
 
     @Test
-    public void testFindOne() {
-        // Test için bir örnek müşteri oluşturun
+    @Description("Should fetch a customer with id parameter")
+    public void CustomerService_FindOneCustomer_ReturnCustomerDTO() {
         Customer customer = new Customer();
         customer.setId(1L);
         customer.setFirstName("John");
         customer.setLastName("Doe");
-
-        // Müşteri ID'sine göre mock bir CustomerDTO oluşturun
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(customer.getId());
-        customerDTO.setFirstName(customer.getFirstName());
-        customerDTO.setLastName(customer.getLastName());
-
-        // customerRepository.findById(id) çağrısına verilecek cevabı belirleyin
+        BeanUtils.copyProperties(customer, customerDTO);
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-
-        // customerMapper.toDto(customer) çağrısına verilecek cevabı belirleyin
         when(customerMapper.toDto(customer)).thenReturn(customerDTO);
 
-        // Servis metodu çağırın
         Optional<CustomerDTO> result = customerService.findOne(1L);
-
-        // Sonucu kontrol edin
         assertTrue(result.isPresent());
         assertEquals(customerDTO, result.get());
     }
 
     @Test
-    public void testFindAll() {
-        // Test için bir sayfalama nesnesi oluşturun
+    @Description("Should fetch all customers")
+    public void CustomerService_FindAllCustomers_ReturnCustomerDTOList() {
         Pageable pageable = PageRequest.of(0, 10);
-
-        // customerRepository.findAll(pageable) çağrısına verilecek cevabı belirleyin
         Page<Customer> customersPage = new PageImpl<>(Collections.emptyList());
         when(customerRepository.findAll(pageable)).thenReturn(customersPage);
-
-        // Servis metodu çağırın
         Page<CustomerDTO> result = customerService.findAll(pageable);
-
-        // Sonucu kontrol edin
         assertNotNull(result);
         assertEquals(0, result.getContent().size());
     }
 
     @Test
-    public void testSave() {
-        // Test için bir müşteri DTO oluşturun
-        DistrictDTO districtDTO = new DistrictDTO();
-        districtDTO.setId(1L);
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(1L);
-        customerDTO.setFirstName("John");
-        customerDTO.setLastName("Doe");
-        customerDTO.setEmail("john@doe.com");
-        customerDTO.setDistrictDTO(districtDTO);
-
-        // customerMapper.toEntity(customerDTO) çağrısına verilecek cevabı belirleyin
+    @Description("Should create a customer in the database")
+    public void CustomerService_CreateCustomer_ReturnCustomerDTO() {
+        CustomerDTO customerDTO = new CustomerDTO(1L, "Ömer", "ALTAN", "omer@gmail.com", "Saraycık Mahallesi 2432.Cadde", new DistrictDTO(1L));
         Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDTO, customer);
         District district = new District();
         district.setId(1L);
-        customer.setId(customerDTO.getId());
-        customer.setFirstName(customerDTO.getFirstName());
-        customer.setLastName(customerDTO.getLastName());
-        customer.setEmail(customerDTO.getEmail());
         customer.setDistrict(district);
+
         when(customerMapper.toEntity(customerDTO)).thenReturn(customer);
-
-        // customerRepository.save(customer) çağrısına verilecek cevabı belirleyin
         when(customerRepository.save(customer)).thenReturn(customer);
+        when(customerMapper.toDto(customer)).thenReturn(customerDTO);
 
-        // Servis metodu çağırın
-        CustomerDTO result = customerService.save(customerDTO);
-
-        // Sonucu kontrol edin
-        assertNotNull(result);
-        assertEquals(customerDTO, result);
+        CustomerDTO savedCustomer = customerService.save(customerDTO);
+        Assertions.assertThat(savedCustomer).isNotNull();
+        assertEquals(customerDTO.getId(), savedCustomer.getId());
+        assertEquals(customerDTO.getFirstName(), savedCustomer.getFirstName());
+        assertEquals(customerDTO.getLastName(), savedCustomer.getLastName());
+        assertEquals(customerDTO.getEmail(), savedCustomer.getEmail());
+        assertEquals(customerDTO.getAddress(), savedCustomer.getAddress());
+        assertNotNull(savedCustomer.getDistrictDTO());
+        assertEquals(customerDTO.getDistrictDTO().getId(), savedCustomer.getDistrictDTO().getId());
     }
 
     @Test
-    public void testUpdate() {
-        // Test için bir müşteri DTO oluşturun
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(1L);
-        customerDTO.setFirstName("John");
-        customerDTO.setLastName("Doe");
-
-        // customerMapper.toEntity(customerDTO) çağrısına verilecek cevabı belirleyin
+    @Description("Should update a customer in the database")
+    public void DistrictService_UpdateCustomer_ReturnDistrictDTO() {
+        CustomerDTO customerDTO = new CustomerDTO(1L, "Ömer", "ALTAN", "omeraltan66@gmail.com", "Saraycık Mahallesi 2432.Cadde", new DistrictDTO(1L));
         Customer customer = new Customer();
-        customer.setId(customerDTO.getId());
-        customer.setFirstName(customerDTO.getFirstName());
-        customer.setLastName(customerDTO.getLastName());
+        BeanUtils.copyProperties(customerDTO, customer);
+        District district = new District();
+        district.setId(1L);
+        customer.setDistrict(district);
+
         when(customerMapper.toEntity(customerDTO)).thenReturn(customer);
-
-        // customerRepository.save(customer) çağrısına verilecek cevabı belirleyin
         when(customerRepository.save(customer)).thenReturn(customer);
+        when(customerMapper.toDto(customer)).thenReturn(customerDTO);
 
-        // Servis metodu çağırın
         CustomerDTO result = customerService.update(customerDTO);
 
-        // Sonucu kontrol edin
         assertNotNull(result);
-        assertEquals(customerDTO, result);
+        assertEquals(customerDTO.getId(), result.getId());
+        assertEquals(customerDTO.getFirstName(), result.getFirstName());
+        assertEquals(customerDTO.getLastName(), result.getLastName());
+        assertEquals(customerDTO.getEmail(), result.getEmail());
+        assertEquals(customerDTO.getAddress(), result.getAddress());
+        assertNotNull(result.getDistrictDTO());
+        assertEquals(customerDTO.getDistrictDTO().getId(), result.getDistrictDTO().getId());
     }
 
     @Test

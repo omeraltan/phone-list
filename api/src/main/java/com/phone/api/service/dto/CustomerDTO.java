@@ -38,6 +38,18 @@ public class CustomerDTO implements Serializable {
 
     private DistrictDTO districtDTO;
 
+    public CustomerDTO() {
+    }
+
+    public CustomerDTO(Long id, String firstName, String lastName, String email, String address, DistrictDTO districtDTO) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.districtDTO = districtDTO;
+    }
+
     public Long getId() {
         return id;
     }
