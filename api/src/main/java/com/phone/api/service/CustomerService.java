@@ -65,8 +65,12 @@ public class CustomerService {
     public CustomerDTO save(CustomerDTO customerDTO) {
         log.debug("Request to save Customer : {}", customerDTO);
         Customer customer = customerMapper.toEntity(customerDTO);
+        log.debug("Mapped customer entity: {}", customer);
         customer = customerRepository.save(customer);
-        return customerMapper.toDto(customer);
+        log.debug("Saved customer entity: {}", customer);
+        CustomerDTO result = customerMapper.toDto(customer);
+        log.debug("Mapped customer DTO: {}", result);
+        return result;
     }
 
     /**

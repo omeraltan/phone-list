@@ -32,6 +32,10 @@ public class DistrictDTO implements Serializable {
     public DistrictDTO() {
     }
 
+    public DistrictDTO(Long id) {
+        this.id = id;
+    }
+
     public DistrictDTO(String name, String description, Integer code) {
         this.name = name;
         this.description = description;
