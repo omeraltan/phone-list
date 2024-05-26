@@ -54,16 +54,24 @@ public class PhoneDTO implements Serializable {
     }
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PhoneDTO that)) return false;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PhoneDTO)) {
+            return false;
+        }
 
-        return Objects.equals(id, that.id);
+        PhoneDTO phoneDTO = (PhoneDTO) o;
+        if (this.id == null) {
+            return false;
+        }
+        return Objects.equals(this.id, phoneDTO.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.id);
     }
 
     @Override

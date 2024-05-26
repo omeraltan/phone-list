@@ -5,6 +5,7 @@ import com.phone.api.domain.Customer;
 import com.phone.api.domain.District;
 import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.DistrictDTO;
+import com.phone.api.service.dto.PhoneDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
