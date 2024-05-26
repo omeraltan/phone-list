@@ -82,16 +82,24 @@ public class DistrictDTO implements Serializable {
     }
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DistrictDTO that)) return false;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DistrictDTO)) {
+            return false;
+        }
 
-        return Objects.equals(id, that.id);
+        DistrictDTO districtDTO = (DistrictDTO) o;
+        if (this.id == null) {
+            return false;
+        }
+        return Objects.equals(this.id, districtDTO.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.id);
     }
 
     @Override

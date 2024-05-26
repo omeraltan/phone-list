@@ -118,16 +118,24 @@ public class CustomerDTO implements Serializable {
     }
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CustomerDTO that)) return false;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CustomerDTO)) {
+            return false;
+        }
 
-        return Objects.equals(id, that.id);
+        CustomerDTO customerDTO = (CustomerDTO) o;
+        if (this.id == null) {
+            return false;
+        }
+        return Objects.equals(this.id, customerDTO.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.id);
     }
 
     @Override

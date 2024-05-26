@@ -47,6 +47,10 @@ public class District implements Serializable {
     public District() {
     }
 
+    public District(Long id) {
+        this.id = id;
+    }
+
     public District(String name, String description, Integer code) {
         this.name = name;
         this.description = description;
