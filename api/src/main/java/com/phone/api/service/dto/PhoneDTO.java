@@ -20,6 +20,15 @@ public class PhoneDTO implements Serializable {
 
     private CustomerDTO customerDTO;
 
+    public PhoneDTO() {
+    }
+
+    public PhoneDTO(Long id, String phoneNumber, CustomerDTO customerDTO) {
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+        this.customerDTO = customerDTO;
+    }
+
     public Long getId() {
         return id;
     }

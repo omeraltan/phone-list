@@ -6,7 +6,6 @@ import com.phone.api.repository.CustomerRepository;
 import com.phone.api.service.dto.CustomerDTO;
 import com.phone.api.service.dto.DistrictDTO;
 import com.phone.api.service.mapper.CustomerMapper;
-import com.phone.api.service.mapper.CustomerMapperImpl;
 import jdk.jfr.Description;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -38,9 +37,6 @@ public class CustomerServiceTest {
 
     @InjectMocks
     private CustomerService customerService;
-
-    @Spy
-    private CustomerMapper customerMapperSpy = new CustomerMapperImpl();
 
     @Test
     @Description("Should fetch a customer with id parameter")
@@ -122,14 +118,10 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void testDelete() {
-        // customerRepository.deleteById(id) çağrısını doğrulayın
+    @Description("Should delete a customer in the database")
+    public void CustomerService_DeleteCustomer() {
         doNothing().when(customerRepository).deleteById(1L);
-
-        // Servis metodu çağırın
         customerService.delete(1L);
-
-        // Metodun çağrılıp çağrılmadığını kontrol edin
         verify(customerRepository, times(1)).deleteById(1L);
     }
 }

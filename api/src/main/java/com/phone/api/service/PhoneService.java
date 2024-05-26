@@ -51,6 +51,11 @@ public class PhoneService {
         return phoneRepository.findCountByCustomerPhones(customerId);
     }
 
+    /**
+     * Get all the customers for controls.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
     public Optional<List<CustomerDTO>> findAll() {
         log.debug("Request to get all Customers");
         List<CustomerDTO> customerDTOS = customerMapper.toDto(customerRepository.findAll());

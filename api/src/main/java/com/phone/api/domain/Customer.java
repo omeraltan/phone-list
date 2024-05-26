@@ -51,6 +51,10 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
+    public Customer(Long id) {
+        this.id = id;
+    }
+
     public Customer(Long id, String firstName, String lastName, String email, District district) {
         this.id = id;
         this.firstName = firstName;

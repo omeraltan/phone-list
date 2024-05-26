@@ -41,6 +41,10 @@ public class CustomerDTO implements Serializable {
     public CustomerDTO() {
     }
 
+    public CustomerDTO(Long id) {
+        this.id = id;
+    }
+
     public CustomerDTO(Long id, String firstName, String lastName, String email, String address, DistrictDTO districtDTO) {
         this.id = id;
         this.firstName = firstName;
